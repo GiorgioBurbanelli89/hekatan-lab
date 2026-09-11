@@ -156,9 +156,17 @@ El resto es desarrollo propio de **Hekatan Engineers**: el **intérprete de MATL
 parser, evaluador), el **JIT**, el **álgebra numérica sobre oneMKL**, el **motor de cálculo
 simbólico** y las **directivas de formato tipo libro** descritas arriba.
 
+**Aviso honesto sobre el simbólico:** `int`, `simplify`, `factor`, `expand`, `limit`, `solve` y
+`symsum` se envían **primero a [Giac](https://www-fourier.univ-grenoble-alpes.fr/~parisse/giac.html)**
+(Bernard Parisse y Renée De Graeve, licencia **GPL-3.0**), cargado como `giac.dll`; si Giac no
+responde, se usa el motor propio. También se incluyen Intel oneMKL, OpenBLAS, Triangle (Shewchuk),
+Eigen, AvalonEdit, WebView2, plotly.js, three.js y otros — lista completa, versiones y licencias en
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) y la carpeta `licenses/`.
+
 ---
 
 ## Licencia
 
 Distribuido bajo licencia **MIT**. Ver el archivo `LICENSE`. El crédito de la base de render/UI
-corresponde a PROEKTSOFT EOOD® (Calcpad, MIT).
+corresponde a PROEKTSOFT EOOD® (Calcpad, MIT). Los componentes de terceros conservan sus propias
+licencias (ver `THIRD_PARTY_NOTICES.md`).

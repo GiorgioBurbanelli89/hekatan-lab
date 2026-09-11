@@ -1,7 +1,6 @@
 MIT License
 
-Copyright (c) 2024 Ned Ganchovski
-Copyright (c) 2026 Jorge Burbano — Hekatan Lab (motor MATLAB y cambios)
+Copyright (c) 2020-2021 WhiteBlackGoose
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,8 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-Este programa incluye componentes de terceros con sus propias licencias
-(GPL-3.0, ISSL de Intel, Triangle, BSD, MPL-2.0, etc.). Ver THIRD_PARTY_NOTICES.md
-y la carpeta licenses/. Este aviso MIT no cambia la licencia de esos componentes.

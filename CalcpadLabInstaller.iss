@@ -73,6 +73,9 @@ Source: "{#MyCliPublishDir}\Settings.xml"; DestDir: "{app}"; Flags: ignoreversio
 ; Documentation
 Source: "README.md"; DestDir: "{app}"; Flags: ignoreversion isreadme
 Source: "LICENSE"; DestDir: "{app}"; Flags: ignoreversion
+; Avisos y licencias de terceros (Giac GPL-3.0, Intel ISSL, Triangle, BSD, MIT...)
+Source: "THIRD_PARTY_NOTICES.md"; DestDir: "{app}"; Flags: ignoreversion
+Source: "licenses\*"; DestDir: "{app}\licenses"; Flags: ignoreversion recursesubdirs
 
 [Dirs]
 ; (La app crea {userdocs}\Calcpad-Lab\Examples en el primer arranque del usuario real.)
