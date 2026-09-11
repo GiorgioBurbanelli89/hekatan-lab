@@ -2231,6 +2231,41 @@ if(!window.__hktdraw){window.__hktdraw=function(spec){
                 // es una arista y cada nudo un circulo numerado.
                 if (a.Length >= 1 && a[0].Fields != null && a[0].Fields.ContainsKey("__isgraph__"))
                     return PlotGraphObject(a);
+                // VARIAS PAREJAS en UNA llamada (MATLAB): plot(x1,y1,x2,y2,...) — cada pareja
+                // es su propia curva, con su color del ColorOrder, y los pares nombre-valor
+                // del final ('LineWidth',2) se aplican a TODAS. Antes solo se dibujaba la
+                // primera pareja: el ejemplo de las 4 cúbicas de Hermite salía con una curva.
+                {
+                    int ip = 0;
+                    var groups = new List<(int Start, int Len)>();
+                    while (ip < a.Length && a[ip] != null && !a[ip].IsString && !a[ip].IsCell)
+                    {
+                        int start = ip;
+                        int len = (ip + 1 < a.Length && a[ip + 1] != null && !a[ip + 1].IsString) ? 2 : 1;
+                        ip += len;
+                        // estilo opcional detrás de la pareja ('r--'), no una propiedad ('LineWidth')
+                        if (ip < a.Length && a[ip].IsString && IsLineSpec(a[ip].StringValue)) { len++; ip++; }
+                        groups.Add((start, len));
+                    }
+                    if (groups.Count > 1)
+                    {
+                        int nTail = a.Length - ip;   // pares nombre-valor comunes
+                        bool prevHold = _holdOn;
+                        try
+                        {
+                            for (int g = 0; g < groups.Count; g++)
+                            {
+                                var seg = new MValue[groups[g].Len + nTail];
+                                Array.Copy(a, groups[g].Start, seg, 0, groups[g].Len);
+                                if (nTail > 0) Array.Copy(a, ip, seg, groups[g].Len, nTail);
+                                if (g > 0) _holdOn = true;   // las siguientes COMPONEN en los mismos ejes
+                                _builtins["plot"](seg);
+                            }
+                        }
+                        finally { _holdOn = prevHold; }
+                        return new MValue(0);
+                    }
+                }
                 // plot(Y) | plot(X,Y) | plot(X,Y,'spec') | + name-value (Color, LineWidth,
                 // MarkerFaceColor, MarkerEdgeColor, MarkerSize). Respeta el linespec ('o','^','-',...)
                 // y, si hay figura abierta, COMPONE en los mismos ejes que patch/line/text.
@@ -2239,9 +2274,41 @@ if(!window.__hktdraw){window.__hktdraw=function(spec){
                 if (a.Length >= 2 && !a[1].IsString) { X = a[0]; Y = a[1]; rest = 2; }
                 else {
                     Y = a[0];
-                    X = new MValue(1, Y.Data.Length);
+                    // plot(Y) con Y MATRIZ: el eje x es 1:filas y hay una curva por columna.
+                    int nxAuto = (Y.Data != null && Y.Rows > 1 && Y.Cols > 1) ? Y.Rows : Y.Data.Length;
+                    X = new MValue(1, nxAuto);
                     for (int i = 0; i < X.Data.Length; i++) X.Data[i] = i + 1;
                     rest = 1;
+                }
+                // MATRIZ: plot(x, Y) dibuja UNA CURVA POR COLUMNA (MATLAB). Si el vector x
+                // casa con las columnas en vez de con las filas, entonces una por FILA.
+                if (Y != null && Y.Data != null && Y.Rows > 1 && Y.Cols > 1 && !Y.IsSymMatrix)
+                {
+                    int nx = X.Data.Length;
+                    bool byCol = nx == Y.Rows;
+                    bool byRow = !byCol && nx == Y.Cols;
+                    if (byCol || byRow)
+                    {
+                        int nCur = byCol ? Y.Cols : Y.Rows;
+                        int nPt = byCol ? Y.Rows : Y.Cols;
+                        bool prevHold2 = _holdOn;
+                        try
+                        {
+                            for (int c = 0; c < nCur; c++)
+                            {
+                                var col = new MValue(1, nPt);
+                                for (int r = 0; r < nPt; r++)
+                                    col.Data[r] = byCol ? Y.Data[r * Y.Cols + c] : Y.Data[c * Y.Cols + r];
+                                var seg = new MValue[1 + (a.Length - rest) + 1];
+                                seg[0] = X; seg[1] = col;
+                                for (int t = rest; t < a.Length; t++) seg[2 + t - rest] = a[t];
+                                if (c > 0) _holdOn = true;
+                                _builtins["plot"](seg);
+                            }
+                        }
+                        finally { _holdOn = prevHold2; }
+                        return new MValue(0);
+                    }
                 }
                 bool wantLine = false, wantMarker = false;
                 string specColor = null, symbol = "circle", dash = "solid";
