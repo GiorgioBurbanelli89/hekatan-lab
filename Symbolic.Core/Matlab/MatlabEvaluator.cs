@@ -6024,6 +6024,12 @@ if(!window.__hktdraw){window.__hktdraw=function(spec){
                 if (a.Length == 0 || !a[0].IsSymbolic) return a[0];
                 return MValue.NewSymbolic(a[0].Symbolic.Simplify());
             };
+            // ¿a[2] es un array numérico "pelado" (sin celdas/strings/sym/unidades)?
+            // Sirve para distinguir subs(f, x, [1 2 3]) de subs(f, {a,b}, {1,2}).
+            static bool IsPlainNumericArray(MValue v)
+                => v != null && v.Data != null && !v.IsCell && !v.IsString && !v.IsStringArray
+                   && !v.IsSymbolic && !v.IsSymMatrix && !v.IsStruct && !v.IsMap && !v.IsCallable
+                   && !v.IsComplex && !v.HasAnyUnit && v.Data.Length > 0;
             _builtins["subs"] = a => {
                 // subs(expr, var, value) — single
                 // subs(expr, [v1, v2, ...], [val1, val2, ...]) — multi (sym matrix de vars + vector de vals)
@@ -6037,6 +6043,13 @@ if(!window.__hktdraw){window.__hktdraw=function(spec){
                 // aquí al lado, ya recorrían las celdas; subs era el que faltaba.
                 if (a[0].IsSymMatrix)
                 {
+                    // f NO escalar + vals vector: en MATLAB es error de dimensiones salvo que
+                    // los tamaños casen. Aquí se avisa claro en vez de coger solo el 1er valor.
+                    if (IsPlainNumericArray(a[2]) && a[2].Data.Length != 1
+                        && !(a[1].IsCell || a[1].IsSymMatrix))
+                        throw new MatlabRuntimeException(
+                            "subs: con una matriz simbolica los valores deben ser escalares; " +
+                            "para evaluar en un vector usa un elemento escalar, p.ej. subs(N(k), x, xs)");
                     int rs0 = a[0].SymCells.GetLength(0), cs0 = a[0].SymCells.GetLength(1);
                     var outCells = new SymNode[rs0, cs0];
                     for (int i = 0; i < rs0; i++)
@@ -6111,6 +6124,31 @@ if(!window.__hktdraw){window.__hktdraw=function(spec){
                 else if (a[2].IsSymbolic && varNames.Count == 1)
                 {
                     valNodes.Add(a[2].Symbolic);
+                }
+                else if (varNames.Count == 1 && IsPlainNumericArray(a[2]) && a[2].Data.Length != 1)
+                {
+                    // VECTORIZADO (MATLAB): subs(f, x, xs) con f ESCALAR y xs un vector/matriz
+                    // numérica → resultado del MISMO tamaño que xs, f evaluada elemento a
+                    // elemento. Es lo que hace `double(subs(Ns(k), x, linspace(0,1,101)))`.
+                    // Antes moría con "vals must match vars count" porque solo se contemplaba
+                    // un valor por variable.
+                    int nEl = a[2].Data.Length;
+                    var outNodes = new SymNode[a[2].Rows, a[2].Cols];
+                    bool allConst = true;
+                    for (int i = 0; i < nEl; i++)
+                    {
+                        var oneRes = result.Subs(varNames[0], new SymConst(a[2].Data[i])).Simplify();
+                        outNodes[i / a[2].Cols, i % a[2].Cols] = oneRes;
+                        if (oneRes is not SymConst) allConst = false;
+                    }
+                    if (allConst)
+                    {
+                        // Todo resuelto → matriz NUMÉRICA (así plot/double la usan directo).
+                        var outData = new double[nEl];
+                        for (int i = 0; i < nEl; i++) outData[i] = ((SymConst)outNodes[i / a[2].Cols, i % a[2].Cols]).Value;
+                        return new MValue(a[2].Rows, a[2].Cols, outData);
+                    }
+                    return MValue.NewSymMatrix(outNodes);
                 }
                 else if (varNames.Count > 1 && a[2].Data != null && a[2].Data.Length == varNames.Count)
                 {
