@@ -354,7 +354,7 @@ namespace Calcpad.Core.Matlab
                 // Elementos cortos/atomicos ([0 0 0 0], [1 2 3]) NO llevan separador.
                 bool sep = snc > 1 && maxLen > 3;
                 var sbSym = new StringBuilder();
-                sbSym.Append("<span class=\"matrix\" style=\"color:#5d2b8a;font-style:italic\">");
+                sbSym.Append("<span class=\"matrix sym\" style=\"color:#5d2b8a;font-style:italic\">");   // .sym: el tema oscuro lo aclara (template.html)
                 for (int i = 0; i < snr; i++)
                 {
                     sbSym.Append("<span class=\"tr\"><span class=\"td\"></span>");
