@@ -40,13 +40,27 @@ N_4 = simplify(diff(v_u, t_2))
 %' Las cuatro cúbicas de Hermite, juntas:
 N = [N_1, N_2, N_3, N_4]
 
-%' <h4>8. La curvatura: la segunda derivada de cada una</h4>
+%' <h4>8. Las cuatro, dibujadas (con L = 1)</h4>
+%' La gráfica también sale del script: se evalúan las N deducidas y se dibujan.
+Ns = subs(N, L, 1);
+xs = linspace(0, 1, 101);
+Y = zeros(4, numel(xs));
+for k = 1:4
+    Y(k, :) = double(subs(Ns(k), x, xs));
+end
+plot(xs, Y(1,:), xs, Y(2,:), xs, Y(3,:), xs, Y(4,:), 'LineWidth', 2)
+legend('N_1', 'N_2', 'N_3', 'N_4'); xlabel('x / L'); ylabel('N'); grid on
+%' Comprobación: cada N vale 1 en SU grado y 0 en los otros tres.
+%' Fila 1 = las cuatro en x = 0 ; fila 2 = las cuatro en x = L:
+Nnodos = [Y(:,1)'; Y(:,end)']
+
+%' <h4>9. La curvatura: la segunda derivada de cada una</h4>
 B = simplify(diff(N, x, 2))
 
-%' <h4>9. La rigidez: K = EI · ∫ Bᵀ·B dx, de 0 a L</h4>
+%' <h4>10. La rigidez: K = EI · ∫ Bᵀ·B dx, de 0 a L</h4>
 K = simplify(EI * int(B.' * B, x, 0, L))
 
-%' <h4>10. Con números: un voladizo con carga en la punta</h4>
+%' <h4>11. Con números: un voladizo con carga en la punta</h4>
 % Datos (ocultos): E en kN/m², I en m⁴, L en m, P en kN
 E = 210e6;  Iz = 8.333e-6;  Lv = 4;  P = 10;
 %' E = @E kN/m² ,  I = @Iz m⁴ ,  L = @Lv m ,  P = @P kN
