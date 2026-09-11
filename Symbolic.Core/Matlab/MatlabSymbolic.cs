@@ -846,11 +846,17 @@ namespace Calcpad.Core.Matlab
     {
         public SymNode A, B;
         public SymDiv(SymNode a, SymNode b) { A = a; B = b; }
-        public override SymNode Diff(string var) =>
+        public override SymNode Diff(string var)
+        {
+            // Denominador constante respecto de var: (A/B)' = A'/B (sin la regla del
+            // cociente, que daria A'·B/B² y, en la 2a derivada, A''·B·B²/(B²)²).
+            if (SymOps.IsConstWrt(B, var))
+                return new SymDiv(A.Diff(var), B).Simplify();
             // (A'B - AB') / B²
-            new SymDiv(
+            return new SymDiv(
                 new SymSub(new SymMul(A.Diff(var), B), new SymMul(A, B.Diff(var))),
                 new SymPow(B, new SymConst(2))).Simplify();
+        }
         public override double Eval(Dictionary<string, double> vals) => A.Eval(vals) / B.Eval(vals);
         public override string ToInfix() => $"({A.ToInfix()})/({B.ToInfix()})";
         public override string ToHtml() =>
@@ -864,8 +870,80 @@ namespace Calcpad.Core.Matlab
             if (a is SymConst ca && b is SymConst cb && cb.Value != 0) return new SymConst(ca.Value / cb.Value);
             if (a is SymConst c0 && c0.Value == 0) return new SymConst(0);
             if (b is SymConst c1 && c1.Value == 1) return a;
-            return new SymDiv(a, b);
+            return CancelCommonFactors(a, b) ?? new SymDiv(a, b);
         }
+
+        /// <summary>Cancela factores comunes numerador/denominador (monomios):
+        /// L^4/L^4 → 1, -3·L^2/L^4 → -3/L^2, 6·x/(4·L) → 3·x/(2·L). Cada lado se toma
+        /// como producto de factores base^exp (exp numerico); una suma cuenta como UN
+        /// factor opaco (solo se cancela contra la misma suma). Devuelve null si no hay
+        /// nada que cancelar, para no tocar la forma de la expresion.</summary>
+        private static SymNode CancelCommonFactors(SymNode a, SymNode b)
+        {
+            var fa = new System.Collections.Generic.List<SymNode>(); SymMul.FlattenMul(a, fa);
+            var fb = new System.Collections.Generic.List<SymNode>(); SymMul.FlattenMul(b, fb);
+            double ka = 1, kb = 1;
+            var ea = new System.Collections.Generic.Dictionary<string, (double Exp, SymNode Base)>();
+            var eb = new System.Collections.Generic.Dictionary<string, (double Exp, SymNode Base)>();
+            var orderA = new System.Collections.Generic.List<string>();
+            var orderB = new System.Collections.Generic.List<string>();
+            void Acc(System.Collections.Generic.List<SymNode> fs, ref double k,
+                     System.Collections.Generic.Dictionary<string, (double Exp, SymNode Base)> map,
+                     System.Collections.Generic.List<string> order)
+            {
+                foreach (var f in fs)
+                {
+                    if (f is SymConst c) { k *= c.Value; continue; }
+                    SymNode bs = f; double ex = 1;
+                    if (f is SymPow p && p.Exp is SymConst pe) { bs = p.Base; ex = pe.Value; }
+                    string key = bs.ToInfix();
+                    if (map.TryGetValue(key, out var cur)) map[key] = (cur.Exp + ex, cur.Base);
+                    else { map[key] = (ex, bs); order.Add(key); }
+                }
+            }
+            Acc(fa, ref ka, ea, orderA);
+            Acc(fb, ref kb, eb, orderB);
+            if (kb == 0 || double.IsNaN(ka) || double.IsNaN(kb)) return null;
+
+            bool changed = false;
+            foreach (var key in orderA)
+            {
+                if (!eb.TryGetValue(key, out var d)) continue;
+                var n = ea[key];
+                if (n.Exp <= 0 || d.Exp <= 0) continue;
+                double common = Math.Min(n.Exp, d.Exp);
+                ea[key] = (n.Exp - common, n.Base);
+                eb[key] = (d.Exp - common, d.Base);
+                changed = true;
+            }
+            // Coeficientes enteros: reducir por el MCD (6/4 → 3/2), y signo al numerador.
+            if (ka == Math.Floor(ka) && kb == Math.Floor(kb) && Math.Abs(ka) < 1e15 && Math.Abs(kb) < 1e15 && ka != 0)
+            {
+                long g = Gcd((long)Math.Abs(ka), (long)Math.Abs(kb));
+                if (g > 1) { ka /= g; kb /= g; changed = true; }
+                if (kb < 0) { ka = -ka; kb = -kb; changed = true; }
+            }
+            if (!changed) return null;
+
+            SymNode Build(double k, System.Collections.Generic.Dictionary<string, (double Exp, SymNode Base)> map,
+                          System.Collections.Generic.List<string> order)
+            {
+                SymNode acc = k == 1 ? null : new SymConst(k);
+                foreach (var key in order)
+                {
+                    var (ex, bs) = map[key];
+                    if (ex == 0) continue;
+                    SymNode piece = ex == 1 ? bs : new SymPow(bs, new SymConst(ex));
+                    acc = acc == null ? piece : new SymMul(acc, piece);
+                }
+                return acc ?? new SymConst(1);
+            }
+            var num = Build(ka, ea, orderA);
+            var den = Build(kb, eb, orderB);
+            if (den is SymConst dc && dc.Value == 1) return num;
+            return new SymDiv(num, den);
+        }
+        private static long Gcd(long x, long y) { while (y != 0) { var t = x % y; x = y; y = t; } return x; }
     }
     public sealed class SymPow : SymNode
     {
@@ -894,23 +972,25 @@ namespace Calcpad.Core.Matlab
             // asociativo por la DERECHA en giac/CAS (a^2^2 = a^(2^2)), lo que corrompe
             // el exponente (con mas anidamiento a^2^2^2 = a^16, no a^8) y da resultados
             // numericamente ERRONEOS al simplificar. Mismo motivo para el exponente.
-            string sb = Base is SymAdd || Base is SymSub || Base is SymMul || Base is SymDiv || Base is SymPow
-                ? $"({Base.ToInfix()})" : Base.ToInfix();
+            string sb = BaseNeedsParens ? $"({Base.ToInfix()})" : Base.ToInfix();
             string se = Exp is SymConst ? Exp.ToInfix() : $"({Exp.ToInfix()})";
             return $"{sb}^{se}";
         }
+        /// <summary>La base va entre parentesis si es suma/resta/producto/cociente, OTRA
+        /// potencia ((L³)², no "L³²" que se lee L^32) o una constante negativa ((-2)^x).</summary>
+        private bool BaseNeedsParens =>
+            Base is SymAdd || Base is SymSub || Base is SymMul || Base is SymDiv || Base is SymPow
+            || (Base is SymConst bc && bc.Value < 0);
         public override string ToHtml()
         {
             // Exponente como <sup>
-            string sbH = Base is SymAdd || Base is SymSub || Base is SymMul || Base is SymDiv
-                ? $"({Base.ToHtml()})" : Base.ToHtml();
-            string seH = Exp is SymConst ? Exp.ToHtml() : Exp.ToHtml();
+            string sbH = BaseNeedsParens ? $"({Base.ToHtml()})" : Base.ToHtml();
+            string seH = Exp.ToHtml();
             return $"{sbH}<sup>{seH}</sup>";
         }
         public override string ToLatex()
         {
-            string sbL = Base is SymAdd || Base is SymSub || Base is SymMul || Base is SymDiv
-                ? $"\\left({Base.ToLatex()}\\right)" : Base.ToLatex();
+            string sbL = BaseNeedsParens ? $"\\left({Base.ToLatex()}\\right)" : Base.ToLatex();
             return $"{{{sbL}}}^{{{Exp.ToLatex()}}}";
         }
         public override SymNode Subs(string var, SymNode val) => new SymPow(Base.Subs(var, val), Exp.Subs(var, val)).Simplify();
@@ -922,6 +1002,11 @@ namespace Calcpad.Core.Matlab
             if (e is SymConst c1 && c1.Value == 1) return b;
             if (b is SymConst cb0 && cb0.Value == 0) return new SymConst(0);
             if (b is SymConst cb1 && cb1.Value == 1) return new SymConst(1);
+            // (a^m)^n -> a^(m·n) con n ENTERO (valido siempre: z^n entero es producto
+            // repetido). Con n no entero NO se pliega: (x^2)^(1/2) = |x| != x.
+            if (b is SymPow bp && bp.Exp is SymConst bm && e is SymConst en
+                && en.Value == Math.Floor(en.Value) && !double.IsInfinity(en.Value))
+                return new SymPow(bp.Base, new SymConst(bm.Value * en.Value)).Simplify();
             return new SymPow(b, e);
         }
     }
