@@ -954,7 +954,11 @@ return {make:make};
         /// <summary>Ubicación MATLAB de la leyenda -> posición Plotly (dentro de los ejes).</summary>
         public static string LegendPosJson(string loc)
         {
-            string bg = "bgcolor:'rgba(255,255,255,0.75)',bordercolor:'#ccc',borderwidth:1";
+            // La leyenda SIGUE AL TEMA. Con el blanco fijo, en oscuro salía una caja clara con
+            // el texto claro encima (PlotFg) y no se leían los nombres de las curvas.
+            string bg = DarkTheme
+                ? $"bgcolor:'rgba(26,23,18,0.85)',bordercolor:'{PlotGrid}',borderwidth:1,font:{{color:'{PlotFg}'}}"
+                : $"bgcolor:'rgba(237,228,206,0.85)',bordercolor:'{PlotGrid}',borderwidth:1,font:{{color:'{PlotFg}'}}";
             double x = 0.98, y = 0.98; string xa = "right", ya = "top";
             switch ((loc ?? "northeast").ToLowerInvariant().Replace("outside", ""))
             {

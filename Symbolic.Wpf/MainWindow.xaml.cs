@@ -3180,8 +3180,32 @@ namespace Calcpad.Wpf
             try
             {
                 string cls = dark ? "dark" : "gold";
-                WebViewer?.CoreWebView2?.ExecuteScriptAsync(
-                    $"var h=document.documentElement; h.classList.remove('dark','gold'); h.classList.add('{cls}');");
+                // Los colores de CADA gráfica van INCRUSTADOS en su layout (paper_bgcolor…), no en
+                // el CSS: con el .m el reporte se pinta por streaming en el DOM y no hay copia que
+                // re-teñir, así que en Oro la gráfica se quedaba con el fondo oscuro. Se re-tiñe EN
+                // VIVO: Plotly.relayout en cada gráfica y fill/stroke en los SVG del motor.
+                string bg = dark ? "#1a1712" : "#ede4ce";
+                string fg = dark ? "#e8e2d4" : "#2b2416";
+                string gr = dark ? "#3a3226" : "#cdbf9c";
+                string lbg = dark ? "rgba(26,23,18,0.85)" : "rgba(237,228,206,0.85)";
+                string js =
+                    $"var h=document.documentElement; h.classList.remove('dark','gold'); h.classList.add('{cls}');" +
+                    "(function(){try{" +
+                    $"var BG='{bg}', FG='{fg}', GR='{gr}', LBG='{lbg}';" +
+                    "if (window.Plotly) document.querySelectorAll('.js-plotly-plot').forEach(function(d){" +
+                    "  try{ Plotly.relayout(d, {'paper_bgcolor':BG,'plot_bgcolor':BG,'font.color':FG," +
+                    "    'xaxis.color':FG,'xaxis.gridcolor':GR,'xaxis.zerolinecolor':GR,'xaxis.linecolor':FG,'xaxis.tickcolor':FG," +
+                    "    'yaxis.color':FG,'yaxis.gridcolor':GR,'yaxis.zerolinecolor':GR,'yaxis.linecolor':FG,'yaxis.tickcolor':FG," +
+                    "    'legend.bgcolor':LBG,'legend.bordercolor':GR,'legend.font.color':FG," +
+                    "    'scene.bgcolor':BG,'scene.xaxis.color':FG,'scene.yaxis.color':FG,'scene.zaxis.color':FG}); }catch(e){}" +
+                    "});" +
+                    // las gráficas SVG del motor (y el lienzo 3D): fondo y texto
+                    "document.querySelectorAll('svg.hk-plot, svg[data-hkplot]').forEach(function(s){" +
+                    "  try{ s.style.background=BG; s.querySelectorAll('text').forEach(function(t){t.style.fill=FG;}); }catch(e){}" +
+                    "});" +
+                    "document.querySelectorAll('canvas[id^=lab3d_]').forEach(function(c){ try{ c.style.background=BG; }catch(e){} });" +
+                    "}catch(e){}})();";
+                WebViewer?.CoreWebView2?.ExecuteScriptAsync(js);
             }
             catch { }
         }
@@ -3298,9 +3322,11 @@ window.__lazyRelayout = function(id,a,b){ var d=window.__plotDefs[id]; if(d){d.o
             if (string.IsNullOrEmpty(_lastReportHtml)) return;
             string h = _lastReportHtml;
             if (dark)   // gold → dark
-                h = h.Replace("#ede4ce", "#1a1712").Replace("#2b2416", "#e8e2d4").Replace("#cdbf9c", "#3a3226");
+                h = h.Replace("#ede4ce", "#1a1712").Replace("#2b2416", "#e8e2d4").Replace("#cdbf9c", "#3a3226")
+                     .Replace("rgba(237,228,206,0.85)", "rgba(26,23,18,0.85)");   // el fondo de la leyenda
             else        // dark → gold
-                h = h.Replace("#1a1712", "#ede4ce").Replace("#e8e2d4", "#2b2416").Replace("#3a3226", "#cdbf9c");
+                h = h.Replace("#1a1712", "#ede4ce").Replace("#e8e2d4", "#2b2416").Replace("#3a3226", "#cdbf9c")
+                     .Replace("rgba(26,23,18,0.85)", "rgba(237,228,206,0.85)");
             _lastReportHtml = h;
             try { await RenderReportHtmlAsync(h); } catch { }
         }
@@ -3362,7 +3388,11 @@ window.__lazyRelayout = function(id,a,b){ var d=window.__plotDefs[id]; if(d){d.o
             // El fondo de cada gráfica (paper_bgcolor de Plotly / fill del SVG) va INCRUSTADO en su
             // HTML, no en el CSS del reporte. Se RE-TIÑE el HTML cacheado y se re-navega SIN recalcular
             // el motor (las integrales/meshgrid no cambian con el tema). Mucho más rápido.
-            if (IsInitialized && IsCalculated && !IsWebForm && !_isParsing && !string.IsNullOrEmpty(_lastReportHtml))
+            // OJO: antes exigía IsCalculated (el Tag del botón Calcular). Con AutoRun ese Tag no
+            // siempre queda en "T", así que al pulsar Oro/Oscuro el reporte NO se re-teñía y las
+            // GRÁFICAS se quedaban con los colores del tema anterior (fondo negro en Oro).
+            // Basta con tener HTML cacheado y no estar en formulario ni a media compilación.
+            if (IsInitialized && !IsWebForm && !_isParsing && !string.IsNullOrEmpty(_lastReportHtml))
             {
                 RetintReportForTheme(dark);
             }
@@ -3753,6 +3783,17 @@ window.__lazyRelayout = function(id,a,b){ var d=window.__plotDefs[id]; if(d){d.o
                         SetInputText(root.GetProperty("text").GetString());
                         ForceHighlight();
                         _ctlPlotBefore = Calcpad.Core.Matlab.MatlabPlots.LastPlotId; _recalcFromControl = true; CalculateAsync(); await CtlWaitCalc();
+                        break;
+                    case "temaestado":   // diagnóstico: por qué no se re-tiñe el reporte
+                        resp = "{\"ok\":true,\"init\":" + (IsInitialized ? "true" : "false")
+                             + ",\"calc\":" + (IsCalculated ? "true" : "false")
+                             + ",\"webform\":" + (IsWebForm ? "true" : "false")
+                             + ",\"parsing\":" + (_isParsing ? "true" : "false")
+                             + ",\"html\":" + (_lastReportHtml == null ? "0" : _lastReportHtml.Length.ToString()) + "}";
+                        break;
+                    case "theme":   // cambiar de tema EN CALIENTE (Oscuro/Oro), como el botón
+                        SetTheme(root.GetProperty("dark").GetBoolean());
+                        await System.Threading.Tasks.Task.Delay(1200);   // que acabe de re-navegar
                         break;
                     case "capture":
                         await System.Threading.Tasks.Task.Delay(300);
