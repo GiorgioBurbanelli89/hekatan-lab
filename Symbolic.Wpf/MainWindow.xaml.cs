@@ -3201,7 +3201,9 @@ namespace Calcpad.Wpf
                     "});" +
                     // las gráficas SVG del motor (y el lienzo 3D): fondo y texto
                     "document.querySelectorAll('svg.hk-plot, svg[data-hkplot]').forEach(function(s){" +
-                    "  try{ s.style.background=BG; s.querySelectorAll('text').forEach(function(t){t.style.fill=FG;}); }catch(e){}" +
+                    // solo el rect de fondo y los textos SIN color propio (text(...,'Color',c) conserva el suyo)
+                    "  try{ s.style.background=BG; s.querySelectorAll('rect.hk-bg').forEach(function(r){r.setAttribute('fill',BG);});" +
+                    "       s.querySelectorAll('text:not([fill])').forEach(function(t){t.style.fill=FG;}); }catch(e){}" +
                     "});" +
                     "document.querySelectorAll('canvas[id^=lab3d_]').forEach(function(c){ try{ c.style.background=BG; }catch(e){} });" +
                     "}catch(e){}})();";

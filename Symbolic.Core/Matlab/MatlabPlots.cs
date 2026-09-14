@@ -1747,12 +1747,13 @@ return {make:make};
             double TY(double y) => height - marginB - (y - ymin) * sy;   // Y invertida (SVG top-left)
 
             var svg = new StringBuilder();
-            svg.AppendLine($"<svg xmlns='http://www.w3.org/2000/svg' width='{width}' height='{height}' viewBox='0 0 {width} {height}'>");
+            // class='hk-plot' + rect.hk-bg: el cambio de tema (Oscuro/Oro) los re-tiñe en vivo (MainWindow.ApplyReportTheme)
+            svg.AppendLine($"<svg xmlns='http://www.w3.org/2000/svg' class='hk-plot' width='{width}' height='{height}' viewBox='0 0 {width} {height}'>");
             // Tema: en dark el fondo del SVG va oscuro y los textos claros (no más blanco).
             // (14-sep-2026) SOLO los textos SIN color propio: una regla CSS gana al atributo fill='…', y con
             // `text{fill:…}` todo text(...,'Color',[r g b]) salía del color del tema (blanco en dark).
             svg.AppendLine($"  <style>text:not([fill]){{fill:{PlotFg};}}</style>");
-            svg.AppendLine($"  <rect x='0' y='0' width='{width}' height='{height}' fill='{PlotBg}'/>");
+            svg.AppendLine($"  <rect class='hk-bg' x='0' y='0' width='{width}' height='{height}' fill='{PlotBg}'/>");
             // Plot area (marco). axis off: figura LIMPIA (esquema tipo Hekatan LISP) → sin marco.
             if (!_figAxisOff)
                 svg.AppendLine($"  <rect x='{marginL}' y='{marginT}' width='{plotW}' height='{plotH}' fill='none' stroke='#ccc'/>");
@@ -1763,7 +1764,7 @@ return {make:make};
             if (!string.IsNullOrEmpty(_figTitle))
             {
                 if (_figAxisOff)
-                    svg.AppendLine($"  <text x='{width/2}' y='{height-18}' text-anchor='middle' font-family='sans-serif' font-size='14' fill='{PlotFg}' opacity='0.6'>{TexToSvg(_figTitle)}</text>");
+                    svg.AppendLine($"  <text x='{width/2}' y='{height-18}' text-anchor='middle' font-family='sans-serif' font-size='14' opacity='0.6'>{TexToSvg(_figTitle)}</text>");
                 else
                 {
                     int titleFont = _subplotActive ? 26 : 14;
