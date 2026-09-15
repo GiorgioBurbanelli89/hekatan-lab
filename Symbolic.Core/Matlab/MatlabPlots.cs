@@ -862,7 +862,20 @@ return {make:make};
                 sb.Append($", scene: {{ bgcolor:'{PlotBg}', ");
                 sb.Append($"xaxis:{{title:{{text:'{EscapeJs(_figXLabel ?? "x")}'}}, {axExtra}}},");
                 sb.Append($"yaxis:{{title:{{text:'{EscapeJs(_figYLabel ?? "y")}'}}, {axExtra}}},");
-                sb.Append($"zaxis:{{title:{{text:'{EscapeJs(_figZLabel ?? "z")}'}}, {axExtra}}}");
+                sb.Append($"zaxis:{{title:{{text:'{EscapeJs(_figZLabel ?? "z")}'}}, {axExtra}");
+                if (_figView2) sb.Append(", visible:false");
+                sb.Append("}");
+                // view(2) de MATLAB: cámara CENITAL sobre el plano XY, ortográfica y con la
+                // proporción X:Y real (no el cubo), para que la losa se vea en PLANTA y no como
+                // una montaña 3D (Jorge, 15-sep-2026: «no me aparece la forma»). El eje Z se
+                // aplasta y se oculta: en planta no aporta nada.
+                if (_figView2)
+                {
+                    double mm = Math.Max(_lastSurfDx, _lastSurfDy);
+                    string ax2 = (_lastSurfDx / mm).ToString("0.###", Inv), ay2 = (_lastSurfDy / mm).ToString("0.###", Inv);
+                    sb.Append($", aspectmode:'manual', aspectratio:{{x:{ax2}, y:{ay2}, z:0.05}}");
+                    sb.Append(", camera:{eye:{x:0, y:0, z:2.2}, up:{x:0, y:1, z:0}, projection:{type:'orthographic'}}");
+                }
                 sb.Append(" }");
             }
             else if (_figAxisOff)
@@ -3335,8 +3348,34 @@ hc.addEventListener('mouseleave',function(){htip.style.display='none';htx.clearR
             sb.Append($"  var layout = {{ title:{{text:'{title}',font:{{size:14}}}}, margin: {{l:18,r:14,t:34,b:24}}, {Scene3DJs()} }};\n");
             sb.Append($"  Plotly.newPlot('matlab_plot_{id}', data, layout, {{responsive:true}});\n");
             sb.Append("})();</script>\n");
+            _lastSurfId = id; _lastSurfDx = RangoDe(X); _lastSurfDy = RangoDe(Y);
             if (TryBufferPanel(sb.ToString())) return "";   // subplot → cae en su celda del grid
             return sb.ToString();
+        }
+
+        // Último surf() suelto (Plotly), para que view(2) DESPUÉS del surf lo gire a planta.
+        private static int _lastSurfId = 0;
+        private static double _lastSurfDx = 1, _lastSurfDy = 1;
+        private static double RangoDe(MValue M)
+        {
+            if (M?.Data == null || M.Data.Length == 0) return 1;
+            double lo = double.MaxValue, hi = double.MinValue;
+            foreach (var v in M.Data) { if (double.IsNaN(v)) continue; if (v < lo) lo = v; if (v > hi) hi = v; }
+            return hi > lo ? hi - lo : 1;
+        }
+        /// <summary>view(2) tras un surf() suelto: en MATLAB gira la cámara del gráfico YA dibujado a
+        /// planta (cenital). Plotly lo había emitido con la cámara 3D fija y el view(2) llegaba tarde
+        /// (Jorge, 15-sep-2026: la losa de mesa_torsion_dke_completo.m salía como montaña 3D).
+        /// Cámara desde +Z, ortográfica, con la proporción real X:Y y el eje Z aplastado.</summary>
+        public static string RelayoutLastSurfView2()
+        {
+            if (_lastSurfId <= 0 || _lastSurfId != _plotCounter) return null;
+            double m = Math.Max(_lastSurfDx, _lastSurfDy);
+            string ax = (_lastSurfDx / m).ToString("0.###", Inv), ay = (_lastSurfDy / m).ToString("0.###", Inv);
+            return $"<script>setTimeout(function(){{try{{Plotly.relayout('matlab_plot_{_lastSurfId}',{{" +
+                   "'scene.camera':{eye:{x:0,y:0,z:2.2},up:{x:0,y:1,z:0},projection:{type:'orthographic'}}," +
+                   $"'scene.aspectmode':'manual','scene.aspectratio':{{x:{ax},y:{ay},z:0.05}}," +
+                   "'scene.zaxis.visible':false});}catch(e){}},60);</script>\n";
         }
 
         /// <summary>surf() COMPUESTO: agrega un trace 'surface' a la figura abierta (misma escena 3D
@@ -3348,6 +3387,7 @@ hc.addEventListener('mouseleave',function(){htip.style.display='none';htx.clearR
         {
             if (_figTraces == null) BeginFigure();
             ValidateGrid(X, Y, Z);
+            _lastSurfDx = RangoDe(X); _lastSurfDy = RangoDe(Y);   // para view(2): proporción X:Y real
             var sb = new StringBuilder();
             sb.Append("{type:'surface'");
             sb.Append($", x:{EmitMatrixJs(X)}, y:{EmitMatrixJs(Y)}, z:{EmitMatrixJs(Z)}");

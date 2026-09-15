@@ -2709,6 +2709,8 @@ if(!window.__hktdraw){window.__hktdraw=function(spec){
                 else if (a.Length >= 2 && a[0].IsScalar && a[1].IsScalar) v2 = a[1].Scalar >= 89;
                 else if (a.Length == 1 && a[0].Data != null && a[0].Data.Length == 2) v2 = a[0].Data[1] >= 89;
                 MatlabPlots.SetView2(v2);
+                // surf() suelto ya emitido (Plotly): girar SU cámara a planta, como MATLAB.
+                if (v2) { var rl = MatlabPlots.RelayoutLastSurfView2(); if (rl != null) _htmlOut?.Invoke(rl); }
                 return new MValue(0);
             };
             _builtins["grid"] = a => {

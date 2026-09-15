@@ -421,6 +421,10 @@ disp(Mxy_n)
 
 figure;
 surf(X_grid, Y_grid, Mxy_n', 'EdgeColor', 'none');
+%  Paleta como Hekatan Struct (SAFE): rojo = minimo, azul = maximo (jet invertido).
+%  Va DESPUES del surf: en MATLAB colormap() es de la figura ACTUAL, y cada figure()
+%  nueva nace con parula, asi que ponerla antes del figure no pinta esta grafica.
+colormap(flipud(jet));
 colorbar; view(2);
 title('Mxy (tonf.m/m) — M12 en ETABS');
 xlabel('X (m)'); ylabel('Y (m)');
@@ -434,6 +438,7 @@ for jj = 0:n_m
     end
 end
 surf(X_grid, Y_grid, w_floor', 'EdgeColor', 'none');
+colormap(flipud(jet));   % misma paleta que Hekatan Struct, por figura (ver nota arriba)
 colorbar; view(2);
 title('Deflexion w (mm)');
 xlabel('X (m)'); ylabel('Y (m)');
