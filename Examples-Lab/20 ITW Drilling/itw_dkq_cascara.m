@@ -257,12 +257,31 @@ end
 %  MEMBRANA ITW 1990 — la misma de itw_1990.m, copiada aqui porque en
 %  Hekatan Lab cada .m es independiente y no comparte funciones.
 % =====================================================================
-function K = itw_k(pts, E, nu, t, gamma_fac)
+function K = itw_k(pts, E, nu, t, gamma_fac, w_alpha)
   % Rigidez 12x12 del elemento ITW. GDL [u v tz] por nudo.
   %   (33) K = INT [B G]' C [B G] dO   con Gauss 3x3
   %   (38) P = gamma INT {b;g}<b;g> dO con UN SOLO PUNTO
   % Integrar K completo y sumar P de un punto es lo que quita los modos
   % de energia nula; con 2x2 el elemento se queda con un mecanismo.
+  %
+  % w_alpha (opcional, > 0): usa en su lugar la regla de OCHO PUNTOS del
+  % ITW **1991**, ec. (30) — que es el paper que cita el manual de CSI,
+  % no el de 1990:
+  %
+  %     W_a + W_b = 1;  alpha = 1/(9 W_a)^(1/4);
+  %     beta = ((2/3 - 2 W_a alpha^2)/W_b)^(1/2)
+  %
+  % cuatro puntos en (+-alpha,+-alpha) con peso W_a y cuatro en (+-beta,0)
+  % y (0,+-beta) con peso W_b. Dice el paper: «For W_a close to 1, the
+  % eight-point rule has a similar effect ... as the 2x2 Gaussian quadrature
+  % BUT DOES NOT PRODUCE A RANK-DEFICIENT MATRIX». Ahi esta la salida del
+  % callejon del 2x2, que desbloquea la cascara curva pero deja el elemento
+  % con CUATRO modos nulos. Con la regla de 8 el hemisferio pinzado pasa de
+  % -34.07 % a -4.07 % en malla 8x8, con 3 modos nulos y patch test exacto.
+  % Y el 1991 NO lleva burbuja: su ec. (6) es Allman a secas.
+  %
+  % Ojo: alpha(W_a = 1) = 9^(-1/4) = 0.5773502691896258, que es la constante
+  % que carga el binario de CSI. NO era un punto de Gauss 2x2 — era esta.
   X = pts(:,1); Y = pts(:,2);
   D = E*t/(1-nu^2) * [1 nu 0; nu 1 0; 0 0 (1-nu)/2];
   rn = [-1 1 1 -1]; sn = [-1 -1 1 1];
@@ -272,14 +291,36 @@ function K = itw_k(pts, E, nu, t, gamma_fac)
     cx(i) =  (Y(sig(i)) - Y(i))/8;      % (l/8)*n1 con n = (dy,-dx)/l
     cy(i) = -(X(sig(i)) - X(i))/8;      % (l/8)*n2
   end
-  g3 = [-sqrt(3/5) 0 sqrt(3/5)];
-  w3 = [5/9 8/9 5/9];
+  if nargin < 6
+    w_alpha = 0;
+  end
+  usa8 = w_alpha > 0;
+  if usa8
+    wb = 1 - w_alpha;
+    al = 1/(9*w_alpha)^0.25;
+    Q = [-al -al w_alpha; -al al w_alpha; al -al w_alpha; al al w_alpha];
+    if wb > 0
+      be = sqrt((2/3 - 2*w_alpha*al^2)/wb);
+      Q = [Q; -be 0 wb; be 0 wb; 0 -be wb; 0 be wb];
+    end
+  else
+    g3 = [-sqrt(3/5) 0 sqrt(3/5)];
+    w3 = [5/9 8/9 5/9];
+    Q = zeros(9,3); k = 0;
+    for ig = 1 : 3
+      for jg = 1 : 3
+        k = k + 1;
+        Q(k,:) = [g3(ig) g3(jg) w3(ig)*w3(jg)];
+      end
+    end
+  end
   K14 = zeros(14,14);
   cdNx = zeros(4,1); cdNy = zeros(4,1); cgt2 = zeros(4,1);
   cgt3 = zeros(4,1); cNN = zeros(4,1); cdJ = 0;
-  for ig = 1 : 3
-    for jg = 1 : 3
-      rr = g3(ig); ss = g3(jg); ww = w3(ig)*w3(jg);
+  cdNBx = 0; cdNBy = 0;
+  for iq = 1 : size(Q,1)
+    if true
+      rr = Q(iq,1); ss = Q(iq,2); ww = Q(iq,3);
       dr = zeros(4,1); ds = zeros(4,1); NN = zeros(4,1);
       for i = 1 : 4
         dr(i) = 0.25*rn(i)*(1 + sn(i)*ss);
@@ -319,15 +360,37 @@ function K = itw_k(pts, E, nu, t, gamma_fac)
         B(2,3*i)   = gt4(i);
         B(3,3*i)   = gt2(i) + gt3(i);
       end
-      B(1,13) = dNBx; B(3,13) = dNBy;
-      B(2,14) = dNBy; B(3,14) = dNBx;
+      if ~usa8       % el ITW 1991 no tiene burbuja
+        B(1,13) = dNBx; B(3,13) = dNBy;
+        B(2,14) = dNBy; B(3,14) = dNBx;
+      end
       K14 = K14 + ww*abs(dJ)*(B'*D*B);
-      if ig == 2 && jg == 2
+      if ~usa8 && rr == 0 && ss == 0
         cdNx = dNx; cdNy = dNy; cgt2 = gt2; cgt3 = gt3;
         cNN = NN; cdJ = abs(dJ);
         cdNBx = dNBx; cdNBy = dNBy;
       end
     end
+  end
+  if usa8
+    % con la regla de 8 el centro NO es punto de la cuadratura: P aparte
+    dr = 0.25*rn(:); ds = 0.25*sn(:);
+    J11 = dr'*X; J12 = dr'*Y; J21 = ds'*X; J22 = ds'*Y;
+    dJ = J11*J22 - J12*J21;
+    Ji11 = J22/dJ; Ji12 = -J12/dJ; Ji21 = -J21/dJ; Ji22 = J11/dJ;
+    cdNx = Ji11*dr + Ji12*ds;
+    cdNy = Ji21*dr + Ji22*ds;
+    nsr = 0.5*[0; 1; 0; -1];
+    nss = 0.5*[-1; 0; 1; 0];
+    NSx = Ji11*nsr + Ji12*nss;
+    NSy = Ji21*nsr + Ji22*nss;
+    for i = 1 : 4
+      p = ant(i);
+      cgt2(i) = NSy(p)*cx(p) - NSy(i)*cx(i);
+      cgt3(i) = NSx(p)*cy(p) - NSx(i)*cy(i);
+    end
+    cNN = 0.25*ones(4,1); cdJ = abs(dJ);
+    cdNBx = 0; cdNBy = 0;
   end
   % P, ec. (38), de UN SOLO PUNTO: gamma * Omega * res*res'
   mu = E/(2*(1+nu));
@@ -340,8 +403,12 @@ function K = itw_k(pts, E, nu, t, gamma_fac)
   res(13) = -0.5*cdNBy;
   res(14) =  0.5*cdNBx;
   K14 = K14 + (gamma_fac*mu)*t*4*cdJ*(res*res');
-  % condensacion estatica de la burbuja
+  % condensacion estatica de la burbuja (si la hay)
   Kuu = K14(1:12,1:12);
+  if usa8
+    K = Kuu;      % el 1991 no tiene burbuja que condensar
+    return
+  end
   Kab = K14(1:12,13:14);
   Kbb = K14(13:14,13:14);
   K = Kuu - Kab*(Kbb\Kab');

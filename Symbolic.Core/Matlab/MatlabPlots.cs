@@ -766,6 +766,78 @@ return {make:make};
             sb.Append("\" style=\"width:100%;max-width:").Append(maxW).Append("px;height:auto;display:block\"/></div>\n");
             return sb.ToString();
         }
+        /// <summary>Envuelve el PNG de un contourf con su rejilla de valores y el hover.
+        /// 17-sep-2026, Jorge: «al pasar con el cursor ya se muestren los valores, no al hacer clic»
+        /// (como el hover_mapa.m de MATLAB, que usa WindowButtonMotionFcn + interp2).
+        /// El PNG no guarda los valores: van aparte, y el JS interpola igual que interp2.
+        /// El mapeo píxel→dato es el MISMO que usó el rasterizador (_pm*), así que la etiqueta
+        /// cae exactamente sobre el punto que se está señalando.</summary>
+        private static string FieldHoverWrap(string inner, FigPrim p, int shownW)
+        {
+            if (p == null || p.Zs == null || p.Xs == null || p.Ys == null || p.Curvi) return inner;
+            var inv = System.Globalization.CultureInfo.InvariantCulture;
+            var z = new StringBuilder("[");
+            for (int k = 0; k < p.Zs.Length; k++)
+            {
+                if (k > 0) z.Append(',');
+                z.Append(double.IsNaN(p.Zs[k]) ? "null" : System.Math.Round(p.Zs[k], 5).ToString("0.#####", inv));
+            }
+            z.Append(']');
+            string N(double v) => v.ToString("0.######", inv);
+            int id = ++_imgZoomId;
+            var sb = new StringBuilder();
+            sb.Append("<span class=\"hk-fieldhover\" id=\"fh").Append(id).Append("\" style=\"display:inline-block;position:relative\"")
+              .Append(" data-nx=\"").Append(p.GridNx).Append("\" data-ny=\"").Append(p.GridNy).Append("\"")
+              .Append(" data-x0=\"").Append(N(p.Xs[0])).Append("\" data-x1=\"").Append(N(p.Xs[p.Xs.Length - 1])).Append("\"")
+              .Append(" data-y0=\"").Append(N(p.Ys[0])).Append("\" data-y1=\"").Append(N(p.Ys[p.Ys.Length - 1])).Append("\"")
+              .Append(" data-ox=\"").Append(N(_pmOX)).Append("\" data-oy=\"").Append(N(_pmOY)).Append("\"")
+              .Append(" data-sx=\"").Append(N(_pmSX)).Append("\" data-sy=\"").Append(N(_pmSY)).Append("\"")
+              .Append(" data-ax=\"").Append(N(_pmX0)).Append("\" data-ay=\"").Append(N(_pmY0)).Append("\"")
+              .Append(" data-ph=\"").Append(N(_pmH)).Append("\" data-pw=\"").Append(shownW).Append("\"")
+              .Append(" data-z='").Append(z).Append("'>").Append(inner).Append("</span>\n");
+            sb.Append(FieldHoverScript);
+            return sb.ToString();
+        }
+
+        /// <summary>JS del hover de los mapas: interpola la rejilla en el punto del cursor.</summary>
+        private const string FieldHoverScript = @"<script>
+(function(){
+ function setup(sp){
+   if(sp.dataset.listo) return; sp.dataset.listo='1';
+   var im=sp.querySelector('img'); if(!im) return;
+   var nx=+sp.dataset.nx, ny=+sp.dataset.ny, z=JSON.parse(sp.dataset.z);
+   var x0=+sp.dataset.x0,x1=+sp.dataset.x1,y0=+sp.dataset.y0,y1=+sp.dataset.y1;
+   var ox=+sp.dataset.ox,oy=+sp.dataset.oy,sx=+sp.dataset.sx,sy=+sp.dataset.sy;
+   var ax=+sp.dataset.ax,ay=+sp.dataset.ay,ph=+sp.dataset.ph,pw=+sp.dataset.pw;
+   var tip=document.createElement('div');
+   tip.style.cssText='position:fixed;z-index:9999;display:none;pointer-events:none;background:#fffffff2;'+
+     'border:1px solid #888;border-radius:4px;padding:3px 6px;font:12px/1.35 Consolas,monospace;color:#111;'+
+     'box-shadow:0 2px 6px rgba(0,0,0,.25);white-space:pre';
+   document.body.appendChild(tip);
+   function num(v){var a=Math.abs(v);return (a>=1e5||(a>0&&a<1e-3))?v.toExponential(3):v.toFixed(4);}
+   im.style.cursor='crosshair';
+   im.addEventListener('pointermove',function(e){
+     var r=im.getBoundingClientRect();
+     var px=(e.clientX-r.left)*pw/r.width, py=(e.clientY-r.top)*ph/r.height;   // pixel del render
+     var X=ax+(px-ox)/sx, Y=ay+(ph-py-oy)/sy;                                  // el mismo mapeo del dibujo
+     var u=(X-x0)/(x1-x0), v=(Y-y0)/(y1-y0);
+     if(u<0||u>1||v<0||v>1){tip.style.display='none';return;}
+     var fi=v*(ny-1), fj=u*(nx-1);
+     var i=Math.min(ny-2,Math.floor(fi)), j=Math.min(nx-2,Math.floor(fj));
+     var a1=fi-i,b1=fj-j;                                                      // bilineal = interp2
+     function Z(i,j){return z[i*nx+j];}
+     var zz=Z(i,j)*(1-a1)*(1-b1)+Z(i,j+1)*(1-a1)*b1+Z(i+1,j)*a1*(1-b1)+Z(i+1,j+1)*a1*b1;
+     if(zz===null||isNaN(zz)){tip.style.display='none';return;}
+     tip.textContent='x = '+num(X)+'\n'+'y = '+num(Y)+'\n'+'z = '+num(zz);
+     tip.style.display='block';tip.style.left=(e.clientX+14)+'px';tip.style.top=(e.clientY+14)+'px';
+   });
+   im.addEventListener('pointerleave',function(){tip.style.display='none';});
+ }
+ function init(){var m=document.querySelectorAll('span.hk-fieldhover');for(var i=0;i<m.length;i++)setup(m[i]);}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else setTimeout(init,0);
+})();
+</script>";
+
         /// <summary>Cierra figura abierta y devuelve su HTML.</summary>
         public static string FinishFigure()
         {
@@ -809,8 +881,10 @@ return {make:make};
                     if (png != null && png.Length > 0)
                     {
                         string b64 = System.Convert.ToBase64String(png);
+                        var campo = _figPrims.Find(p => p.Kind == "fieldfill");
+                        string html = FieldHoverWrap(ZoomableImgHtml(b64, shownW), campo, shownW);
                         _figTraces = null; _figAnnotations = null; _figPrims = null;
-                        return ZoomableImgHtml(b64, shownW);
+                        return html;
                     }
                 }
                 catch { }

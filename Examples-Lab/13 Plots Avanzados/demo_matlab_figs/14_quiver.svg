@@ -1,5 +1,6 @@
 <svg xmlns='http://www.w3.org/2000/svg' width='780' height='800' viewBox='0 0 780 800'>
-  <rect x='0' y='0' width='780' height='800' fill='white'/>
+  <style>text{fill:#2b2416;}</style>
+  <rect x='0' y='0' width='780' height='800' fill='#ede4ce'/>
   <rect x='60' y='50' width='690' height='690' fill='none' stroke='#ccc'/>
   <text x='390' y='25' text-anchor='middle' font-family='sans-serif' font-size='14' font-weight='bold'>14. quiver — rotacional</text>
   <text x='405' y='785' text-anchor='middle' font-family='sans-serif' font-size='12'>x</text>

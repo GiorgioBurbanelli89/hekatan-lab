@@ -1,0 +1,3 @@
+Plot_Multiples_Curvas.m — Varias curvas en el mismo plot con leyenda
+
+Tres curvas trigonometricas en el mismo grafico.

@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using Calcpad.Core.Matlab;
 
 namespace Calcpad.Core
 {
@@ -16,10 +17,11 @@ namespace Calcpad.Core
         public enum Op { Sum, Product, Integral, DoubleIntegral, TripleIntegral }
 
         /// <summary>Formas disponibles. Suma/Producto: Loop | Function. Integral
-        /// simple: Function(integral) | FunctionTrapz | LoopTrapezoid | LoopSimpson.
+        /// simple: Function(integral) | FunctionTrapz | LoopTrapezoid | LoopSimpson
+        /// | FunctionGauss (gaussint) | LoopGauss (loop con nodos/pesos inline).
         /// Doble/Triple: Function(integral2/3) | FunctionArrayValued(anidado,
         /// matriz-seguro) | Loop(trapecio anidado).</summary>
-        public enum Form { Loop, Function, FunctionTrapz, LoopTrapezoid, LoopSimpson, FunctionArrayValued }
+        public enum Form { Loop, Function, FunctionTrapz, LoopTrapezoid, LoopSimpson, FunctionArrayValued, FunctionGauss, LoopGauss }
 
         /// <summary>¿Cuántas variables (dimensiones) usa el operador?</summary>
         public static int Dims(Op op) => op switch
@@ -91,6 +93,19 @@ namespace Calcpad.Core
                     return $"{res} = integral(@({x}) ({expr}), {a}, {b}, 'ArrayValued', true);";
                 case Form.FunctionTrapz:
                     return $"{x}_ = linspace({a}, {b}, 101);{nl}{res} = trapz({x}_, arrayfun(@({x}) ({expr}), {x}_));";
+                case Form.FunctionGauss:
+                    // gaussint es un builtin de Hekatan Lab (cuadratura de Gauss-Legendre).
+                    return $"{res} = gaussint(@({x}) ({expr}), {a}, {b}, 5);";
+                case Form.LoopGauss:
+                    // Loop portable con nodos/pesos de Gauss-Legendre inline (MATLAB real).
+                    MatlabEvaluator.GaussLegendre(3, out var gp, out var gw);
+                    var sb = new StringBuilder();
+                    sb.Append($"{res} = 0; c = (({b}) + ({a}))/2; h = (({b}) - ({a}))/2;");
+                    for (int i = 0; i < 3; i++)
+                        sb.Append(nl).Append($"{x} = c + h*({gp[i].ToString("G17")});   % x{i + 1} (Gauss, w = {gw[i]:G6})" + nl +
+                                             $"    {res} = {res} + ({gw[i].ToString("G17")})*({expr});");
+                    sb.Append(nl).Append($"{res} = h*{res};");
+                    return sb.ToString();
                 case Form.LoopSimpson:
                     return
                         $"n = 100; h = ({b} - ({a}))/n; {res} = 0;{nl}" +

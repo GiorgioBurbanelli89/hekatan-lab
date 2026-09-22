@@ -1,0 +1,17 @@
+ej = zeros(4, 4) = 0000000000000000
+
+chequear jacobianos (area con signo de cada quad)
+
+elem 1 area con signo = 168.00
+
+elem 2 area con signo = 96.00
+
+elem 3 area con signo = 120.00
+
+elem 4 area con signo = 192.00
+
+F = zeros(30, 1) = 0000⋮0[30×1 matrix]
+
+uy nodo5 (48,0) = 0.3350
+
+uy nodo10(48,12)= 0.3334

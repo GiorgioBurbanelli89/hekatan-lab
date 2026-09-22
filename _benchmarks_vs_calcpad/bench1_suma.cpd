@@ -1,0 +1,6 @@
+"BENCHMARK 1 : Suma con unidades  (i = 1 : 1e8)  — Calcpad timer
+n = 100000000
+t_1 = timer(0)
+S = $Sum{i*1m + i*2dm + i*3cm + i*4mm @ i = 1 : n}
+t_2 = timer(0)
+'Tiempo Calcpad -'Δt = t_2 - t_1

@@ -2161,6 +2161,7 @@ if(!window.__hktdraw){window.__hktdraw=function(spec){
             double[] ContourLevelsArg(MValue[] a) =>
                 (a.Length >= 4 && !a[3].IsString && a[3].Data != null && a[3].Data.Length >= 2) ? a[3].Data : null;
             _builtins["contourf"] = a => {
+                a = DropAxes(a);   // contourf(ax, X, Y, Z, ...) como MATLAB
                 if (a.Length < 3) throw new MatlabRuntimeException("contourf(X, Y, Z[, n])");
                 int n = (a.Length >= 4 && !a[3].IsString) ? (int)a[3].Scalar : 10;
                 // Solo primitivas de canvas → FinishFigure lo renderiza como PNG (alineado a MATLAB).
@@ -2169,6 +2170,7 @@ if(!window.__hktdraw){window.__hktdraw=function(spec){
                 return new MValue(0);
             };
             _builtins["contour"] = a => {
+                a = DropAxes(a);
                 if (a.Length < 3) throw new MatlabRuntimeException("contour(X, Y, Z[, n])");
                 int n = (a.Length >= 4 && !a[3].IsString) ? (int)a[3].Scalar : 10;
                 string lc = null;   // contour(...,'LineColor',c): isolineas de un color fijo (MATLAB)
@@ -2178,6 +2180,7 @@ if(!window.__hktdraw){window.__hktdraw=function(spec){
                 return new MValue(0);
             };
             _builtins["imagesc"] = a => {
+                a = DropAxes(a);
                 _htmlOut?.Invoke(MatlabPlots.Imagesc(a[0], _activeColormap));
                 return new MValue(0);
             };
@@ -2220,6 +2223,7 @@ if(!window.__hktdraw){window.__hktdraw=function(spec){
             };
             _builtins["image"] = _builtins["imshow"];
             _builtins["pcolor"] = a => {
+                a = DropAxes(a);
                 if (a.Length < 3) throw new MatlabRuntimeException("pcolor(X, Y, Z)");
                 _htmlOut?.Invoke(MatlabPlots.Contourf(a[0], a[1], a[2], 30, _activeColormap));
                 return new MValue(0);
@@ -2631,6 +2635,7 @@ if(!window.__hktdraw){window.__hktdraw=function(spec){
             }
             string JsonEscape(string s) => s.Replace("\\", "\\\\").Replace("\"", "\\\"");
             _builtins["colorbar"] = a => {
+                a = DropAxes(a);
                 MatlabPlots.SetColorbar(true);
                 // Parsear pares nombre-valor: colorbar('Direction','reverse','Ticks',v)
                 bool rev = false; double[] ticks = null;
@@ -2732,6 +2737,7 @@ if(!window.__hktdraw){window.__hktdraw=function(spec){
                 //             superponen en los mismos ejes (antes cada plot abría uno nuevo).
                 // hold off -> cerrar/emitir la figura actual: el próximo plot empieza otra.
                 // hold     -> alterna.
+                a = DropAxes(a);          // hold(ax, 'on') como MATLAB
                 string mode = a.Length > 0 && a[0].IsString
                     ? a[0].StringValue.Trim().ToLowerInvariant()
                     : (_holdOn ? "off" : "on");
@@ -3069,6 +3075,7 @@ if(!window.__hktdraw){window.__hktdraw=function(spec){
                 return new MValue(0);
             };
             _builtins["text"] = a => {
+                a = DropAxes(a);   // text(ax, x, y, str)
                 if (a.Length < 3) throw new MatlabRuntimeException("text(x, y, str [, props...])");
                 // text(x,y,z,str): si a[2] escalar y a[3] string
                 bool zForm = a.Length >= 4 && a[2].IsScalar && a[3].IsString;

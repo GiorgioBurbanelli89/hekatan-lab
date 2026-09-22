@@ -1,0 +1,18 @@
+<Project>
+  <!-- El SDK 10.0.111 pide el ref pack 10.0.10, pero el instalado es 10.0.11.
+       Forzamos el targeting/runtime pack a 10.0.11 ANTES de que el SDK resuelva los
+       FrameworkReference (los KnownFrameworkReference ya existen aquí, en un Target).
+       Arregla: MC1000 "no encuentra ...\Microsoft.NETCore.App.Ref\10.0.10\...". -->
+  <Target Name="_ForzarRefPack1011" BeforeTargets="ProcessFrameworkReferences">
+    <ItemGroup>
+      <KnownFrameworkReference Update="Microsoft.NETCore.App"
+          Condition="'%(KnownFrameworkReference.TargetFramework)' == 'net10.0'"
+          TargetingPackVersion="10.0.11"
+          LatestRuntimeFrameworkVersion="10.0.11" />
+      <KnownFrameworkReference Update="Microsoft.WindowsDesktop.App"
+          Condition="'%(KnownFrameworkReference.TargetFramework)' == 'net10.0'"
+          TargetingPackVersion="10.0.11"
+          LatestRuntimeFrameworkVersion="10.0.11" />
+    </ItemGroup>
+  </Target>
+</Project>

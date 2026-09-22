@@ -1,0 +1,45 @@
+--- vector columna con unidades ---
+ 
+v =
+ 
+ 10*[kN]
+ 20*[kN]
+ 30*[kN]
+ 
+--- matriz con unidades ---
+ 
+K =
+ 
+[ 2*([kN]/[m]), 1*([kN]/[m])]
+[ 1*([kN]/[m]), 2*([kN]/[m])]
+ 
+--- suma elemento a elemento ---
+ 
+sv =
+ 
+ 15*[kN]
+ 25*[kN]
+ 35*[kN]
+ 
+--- simplify para combinar ---
+ 
+sv2 =
+ 
+ 15*[kN]
+ 25*[kN]
+ 35*[kN]
+ 
+--- separateUnits de un vector ---
+ 
+val =
+ 
+ 10
+ 20
+ 30
+ 
+sym
+--- funciones disponibles en R2017a ---
+exist unitConvert: 0
+exist separateUnits: 2
+exist checkUnits: 0
+exist newUnit: 2

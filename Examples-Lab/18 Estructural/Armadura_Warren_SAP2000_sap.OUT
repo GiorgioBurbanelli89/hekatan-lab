@@ -1,0 +1,20 @@
+
+
+ SAP2000 v24.1.0 Ultimate 64-bit (Analysis Build 9917/64)                       
+ File: C:\Users\j-b-j\Document...\18 Estructural\Armadura_Warren_SAP2000_sap.OUT
+                                                                     
+                                                                       
+
+ D I S P L A C E M E N T   D E G R E E S   O F   F R E E D O M
+
+         (A) = Active DOF, equilibrium equation
+         (-) = Restrained DOF, reaction computed
+         (+) = Constrained DOF
+         (>) = External substructure DOF
+         ( ) = Null DOF
+
+  JOINTS              UX  UY  UZ  RX  RY  RZ
+      N1               -   -   -   -   A   -
+      N2               A   -   A   -   A   -
+      N3               A   -   -   -   A   -
+      N4 TO      N5    A   -   A   -   A   -

@@ -271,8 +271,20 @@ namespace Calcpad.Core
         private static IValue Length(in IValue vector) =>
             new RealValue(IValue.AsVector(vector).Length);
 
-        private static IValue Size(in IValue vector) =>
-            new RealValue(IValue.AsVector(vector).Size);
+        private static IValue Size(in IValue value)
+        {
+            if (value is Matrix m)
+            {
+                // Semántica MATLAB: size(M) = [filas, columnas]
+                var size = new Matrix(1, 2)
+                {
+                    [0, 0] = new RealValue(m.RowCount),
+                    [0, 1] = new RealValue(m.ColCount)
+                };
+                return size;
+            }
+            return new RealValue(IValue.AsVector(value).Size);
+        }
 
         private static Vector Sort(in IValue vector) =>
             IValue.AsVector(vector).Sort();

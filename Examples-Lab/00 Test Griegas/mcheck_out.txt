@@ -1,0 +1,5 @@
+class(Ku) = sym   (double=numerico/MKL, sym=simbolico)
+matmul CON unidad:  2.0188 ms/iter
+class(Kn) = double
+matmul SIN unidad:  0.001150 ms/iter
+RATIO (unidad/numerico) = 1755x mas lento con unidad

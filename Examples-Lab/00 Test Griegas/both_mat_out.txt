@@ -1,0 +1,529 @@
+[> In slab_both>analiza (line 57)
+  In slab_both (line 23)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 23)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 23)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 23)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 23)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 26)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+[> In slab_both>analiza (line 57)
+  In slab_both (line 28)
+  In run_both_mat (line 2)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+SIN unidades: 29.6346 ms/iter
+CON unidades: 38.7585 ms/iter
+overhead unidades: 30.8%
+OK

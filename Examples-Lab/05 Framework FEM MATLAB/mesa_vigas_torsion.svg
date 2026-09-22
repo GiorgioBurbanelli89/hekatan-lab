@@ -1,7 +1,8 @@
 <svg xmlns='http://www.w3.org/2000/svg' width='800' height='754' viewBox='0 0 800 754'>
-  <rect x='0' y='0' width='800' height='754' fill='white'/>
+  <style>text{fill:#e8e2d4;}</style>
+  <rect x='0' y='0' width='800' height='754' fill='#1a1712'/>
   <rect x='60' y='50' width='644' height='644' fill='none' stroke='#ccc'/>
-  <text x='400' y='25' text-anchor='middle' font-family='sans-serif' font-size='14' font-weight='bold'>Torsion T en vigas [kN m]  (max=22.8)</text>
+  <text x='400' y='30' text-anchor='middle' font-family='sans-serif' font-size='26' font-weight='bold'>Torsion T en vigas [kN m]  (max=22.8)</text>
   <text x='382' y='739' text-anchor='middle' font-family='sans-serif' font-size='12'>x [m]</text>
   <text x='15' y='372' text-anchor='middle' font-family='sans-serif' font-size='12' transform='rotate(-90 15 372)'>y [m]</text>
   <text x='89.27272727272728' y='709' text-anchor='middle' font-family='sans-serif' font-size='10'>0</text>

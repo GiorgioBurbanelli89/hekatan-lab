@@ -1,0 +1,1 @@
+MATLAB K(6x6) mixta * d (steady): 0.5882 ms/iter

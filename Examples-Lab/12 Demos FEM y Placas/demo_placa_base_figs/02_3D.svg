@@ -1,5 +1,6 @@
 <svg xmlns='http://www.w3.org/2000/svg' width='800' height='678' viewBox='0 0 800 678'>
-  <rect x='0' y='0' width='800' height='678' fill='white'/>
+  <style>text{fill:#2b2416;}</style>
+  <rect x='0' y='0' width='800' height='678' fill='#ede4ce'/>
   <rect x='60' y='50' width='710' height='568' fill='none' stroke='#ccc'/>
   <text x='400' y='25' text-anchor='middle' font-family='sans-serif' font-size='14' font-weight='bold'>Placa base 3D — 10 pernos M20 + HSS 300×300×8</text>
   <text x='415' y='663' text-anchor='middle' font-family='sans-serif' font-size='12'>x (mm)</text>

@@ -1,0 +1,28 @@
+ 
+D_flex =
+ 
+(1640362616034101/549755813888)*[kN]*[m]
+ 
+Malla: 24 elementos (6x4), 35 nodos, 20 apoyos
+[> In Placa_Rectangular_Unidades (line 138)
+  In run (line 86)
+  In run_placa_mat (line 3)
+  In run (line 86)] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  1.747272e-18.] 
+ 
+w_max =
+ 
+(932948936539233/140737488355328)*[mm]
+ 
+ 
+Mx_max =
+ 
+(883142907370161/140737488355328)*[kN]
+ 
+ 
+My_max =
+ 
+(448403062257805/35184372088832)*[kN]
+ 
+=== FIN ===
+FIGURAS GUARDADAS OK

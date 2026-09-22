@@ -1,7 +1,8 @@
 <svg xmlns='http://www.w3.org/2000/svg' width='646' height='800' viewBox='0 0 646 800'>
-  <rect x='0' y='0' width='646' height='800' fill='white'/>
+  <style>text{fill:#2b2416;}</style>
+  <rect x='0' y='0' width='646' height='800' fill='#ede4ce'/>
   <rect x='60' y='50' width='556' height='690' fill='none' stroke='#ccc'/>
-  <text x='323' y='25' text-anchor='middle' font-family='sans-serif' font-size='14' font-weight='bold'>8. Patch — sección compuesta con cotas</text>
+  <text x='323' y='30' text-anchor='middle' font-family='sans-serif' font-size='26' font-weight='bold'>8. Patch — sección compuesta con cotas</text>
   <text x='60' y='755' text-anchor='middle' font-family='sans-serif' font-size='10'>-0.5</text>
   <line x1='60' y1='740' x2='60' y2='744' stroke='#333' stroke-width='0.8'/>
   <text x='115.6' y='755' text-anchor='middle' font-family='sans-serif' font-size='10'>0</text>

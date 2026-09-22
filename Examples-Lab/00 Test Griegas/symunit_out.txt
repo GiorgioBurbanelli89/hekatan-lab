@@ -1,0 +1,21 @@
+ 
+L =
+ 
+6*[m]
+ 
+ 
+b =
+ 
+300*[mm]
+ 
+ 
+q =
+ 
+10*([kN]/[m]^2)
+ 
+ 
+suma =
+ 
+200*[cm] + 3*[m]
+ 
+ERROR: Undefined function 'unitConvert' for input arguments of type 'sym'.

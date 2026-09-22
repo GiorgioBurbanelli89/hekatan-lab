@@ -1,0 +1,7 @@
+Diagramas_Viga_VM.m — Diagramas de cortante V(x) y momento M(x) de una viga
+
+Viga simplemente apoyada, carga uniforme
+
+Diagramas V(x), M(x) para viga simplemente apoyada L=6m, q=15 kN/m.
+
+M_max = 67.49 kN*m en x = L/2

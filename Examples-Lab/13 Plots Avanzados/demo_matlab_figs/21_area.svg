@@ -1,5 +1,6 @@
 <svg xmlns='http://www.w3.org/2000/svg' width='800' height='800' viewBox='0 0 800 800'>
-  <rect x='0' y='0' width='800' height='800' fill='white'/>
+  <style>text{fill:#2b2416;}</style>
+  <rect x='0' y='0' width='800' height='800' fill='#ede4ce'/>
   <rect x='60' y='50' width='710' height='690' fill='none' stroke='#ccc'/>
   <text x='400' y='25' text-anchor='middle' font-family='sans-serif' font-size='14' font-weight='bold'>21. curvas (a,b,c)</text>
   <text x='415' y='785' text-anchor='middle' font-family='sans-serif' font-size='12'>x</text>
@@ -48,15 +49,6 @@
   <line x1='56' y1='81.36363636363637' x2='60' y2='81.36363636363637' stroke='#333' stroke-width='0.8'/>
   <defs><clipPath id='plot'><rect x='60' y='50' width='710' height='690'/></clipPath></defs>
   <g clip-path='url(#plot)'>
-    <circle cx='92.27' cy='669.43' r='3.00' fill='none' stroke='black' stroke-width='1'/>
-    <circle cx='163.99' cy='689.03' r='3.00' fill='none' stroke='black' stroke-width='1'/>
-    <circle cx='235.71' cy='708.64' r='3.00' fill='none' stroke='black' stroke-width='1'/>
-    <circle cx='307.42' cy='604.09' r='3.00' fill='none' stroke='black' stroke-width='1'/>
-    <circle cx='379.14' cy='643.30' r='3.00' fill='none' stroke='black' stroke-width='1'/>
-    <circle cx='450.86' cy='682.50' r='3.00' fill='none' stroke='black' stroke-width='1'/>
-    <circle cx='522.58' cy='538.75' r='3.00' fill='none' stroke='black' stroke-width='1'/>
-    <circle cx='594.29' cy='597.56' r='3.00' fill='none' stroke='black' stroke-width='1'/>
-    <circle cx='666.01' cy='656.36' r='3.00' fill='none' stroke='black' stroke-width='1'/>
-    <circle cx='737.73' cy='473.41' r='3.00' fill='none' stroke='black' stroke-width='1'/>
+    <polyline points='92.27,669.43 163.99,689.03 235.71,708.64 307.42,604.09 379.14,643.30 450.86,682.50 522.58,538.75 594.29,597.56 666.01,656.36 737.73,473.41' fill='none' stroke='#0072BD' stroke-width='1.5'/>
   </g>
 </svg>

@@ -1,3 +1,4 @@
+using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -104,6 +105,24 @@ namespace Calcpad.Wpf
                     }
                 case "state":
                     return Estado();
+
+                // Autocompletado SIN capturas: el popup es otra ventana y no sale en el PNG
+                // (por eso «no funciona» parecia cierto cuando si funcionaba). Esto devuelve
+                // lo que el popup ofreceria para un prefijo, y si el editor que lo tiene
+                // —el PLEGABLE— esta activo, que es la condicion que lo apaga entero.
+                case "complete":
+                    {
+                        var pre = root.TryGetProperty("prefix", out var pp) ? (pp.GetString() ?? "") : "";
+                        var items = MatlabLang.Items(pre, null, int.MaxValue, _isDarkTheme).ToList();
+                        var nombres = items.Take(12).Select(i => i.Text).ToArray();
+                        return System.Text.Json.JsonSerializer.Serialize(new {
+                            ok = true,
+                            prefijo = pre,
+                            plegable = EditorPlegableActivo,   // si es false, NO hay popup al escribir
+                            total = items.Count,
+                            primeros = nombres,
+                        });
+                    }
 
                 default:
                     return null;

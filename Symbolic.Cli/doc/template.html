@@ -986,6 +986,15 @@
                 background: none;
                 color: #09e;
             }
+
+    /* --- Matrices ARRASTRABLES: manija abajo-derecha para ver mas o menos celdas --- */
+    .matrix[data-hk-cells] { position: relative; }
+    .mat-grip { position:absolute; right:-2px; bottom:-2px; width:16px; height:16px;
+        cursor:nwse-resize; opacity:.4; transition:opacity .15s; z-index:3; }
+    .mat-grip::before { content:''; position:absolute; right:2px; bottom:2px; width:11px; height:11px;
+        border-right:2.5px solid #4a90d9; border-bottom:2.5px solid #4a90d9; }
+    .matrix:hover > .mat-grip, .mat-resizing > .mat-grip { opacity:1; }
+    .mat-resizing { outline:1.5px dashed #4a90d9 !important; outline-offset:3px; }
     </style>
 </head>
 <body>
@@ -1180,4 +1189,60 @@
         }
         document.oncontextmenu = function () { contextMenu = true; };
         document.onmousedown = function () { contextMenu = false; };
+    </script>
+    <script>
+    /* Matrices/vectores ARRASTRABLES (portado de Hekatan Calc web, mathcanvas/main.ts).
+       El HTML trae la matriz COMPLETA en data-hk-cells; aqui solo se redibuja la rejilla
+       .matrix > .tr > .td con el MISMO criterio de truncado de MatlabHtmlWriter. */
+    (function () {
+        var arr = null;
+        function celdas(el) {
+            if (!el.__hkCells) { try { el.__hkCells = JSON.parse(el.dataset.hkCells); } catch (e) { return null; } }
+            return el.__hkCells;
+        }
+        function pinta(el) {
+            var C = celdas(el); if (!C) return;
+            var nr = +el.dataset.hkR, nc = +el.dataset.hkC;
+            var showR = +el.dataset.visRows, showC = +el.dataset.visCols;
+            var tR = showR < nr, tC = showC < nc, h = '', i, j;
+            for (i = 0; i < showR; i++) {
+                var ri = (tR && i === showR - 1) ? nr - 1 : i;
+                h += '<span class="tr"><span class="td"></span>';
+                for (j = 0; j < showC; j++) {
+                    var cj = (tC && j === showC - 1) ? nc - 1 : j;
+                    var txt;
+                    if (tR && i === showR - 1 && tC && j === showC - 2) txt = '⋱';
+                    else if (tC && j === showC - 2) txt = '⋯';
+                    else if (tR && i === showR - 2) txt = '⋮';
+                    else txt = (C[ri] && C[ri][cj] !== undefined) ? C[ri][cj] : '';
+                    h += '<span class="td">' + txt + '</span>';
+                }
+                h += '<span class="td"></span></span>';
+            }
+            h += '<span class="mat-grip" title="Arrastrar para ver mas o menos celdas"></span>';
+            el.innerHTML = h;
+        }
+        document.addEventListener('mousedown', function (e) {
+            var g = e.target.closest ? e.target.closest('.mat-grip') : null; if (!g) return;
+            var el = g.closest('.matrix'); if (!el || !el.dataset.hkCells) return;
+            if (!celdas(el)) return;
+            e.preventDefault(); e.stopPropagation();
+            var c = el.querySelector('.tr > .td + .td'), r = c ? c.getBoundingClientRect() : null;
+            arr = { el: el, x: e.clientX, y: e.clientY,
+                    r0: +el.dataset.visRows, c0: +el.dataset.visCols,
+                    w: (r && r.width) || 40, h: (r && r.height) || 20 };
+            el.classList.add('mat-resizing');
+        }, true);
+        document.addEventListener('mousemove', function (e) {
+            if (!arr) return; e.preventDefault();
+            var el = arr.el, nr = +el.dataset.hkR, nc = +el.dataset.hkC;
+            var R = Math.min(nr, Math.max(1, arr.r0 + Math.round((e.clientY - arr.y) / arr.h)));
+            var Cc = Math.min(nc, Math.max(1, arr.c0 + Math.round((e.clientX - arr.x) / arr.w)));
+            if (R === +el.dataset.visRows && Cc === +el.dataset.visCols) return;
+            el.dataset.visRows = R; el.dataset.visCols = Cc; pinta(el);
+        }, true);
+        document.addEventListener('mouseup', function () {
+            if (!arr) return; arr.el.classList.remove('mat-resizing'); arr = null;
+        }, true);
+    })();
     </script>

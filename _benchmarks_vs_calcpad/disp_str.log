@@ -1,0 +1,19 @@
+ 
+To get started, type one of these: helpwin, helpdesk, or demo.
+For product information, visit www.mathworks.com.
+ 
+
+s =
+
+    'R = 60.0 kN'
+
+
+msg =
+
+    'El valor de R es 60 kN'
+
+
+c =
+
+    'hola mundo'
+

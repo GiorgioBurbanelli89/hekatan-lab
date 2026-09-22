@@ -1,8 +1,9 @@
-Encontrados 88 scripts .m en C:\Users\j-b-j\Documents\Hekatan Calc 1.0.0\Matlab
+Encontrados 227 scripts .m en C:\Users\j-b-j\Documents\Hekatan Calc 1.0.0\Matlab
 
 [PASS] AreaInerciaColumnaCFT_ETABS_pRUEBA.m
 [PASS] AreaInerciaColumnaCFT_ETABS.m
 [PASS] asd.m
+[FAIL 41] bench_matlab_40x40.m :: class="err">Error in "t_total = tic" on line [21]: Undefined variable or units: "tic".
 [FAIL 1] Benchmark JIt.m :: class="err">Error in "t_jit = toc" on line [49]: Undefined variable or units: "toc".
 [PASS] cft_seccion_transformada.m
 [FAIL 10] cg_sismo2_1.m :: class="err">Error in "CG=matrix(nod; 3)" on line [16]: Undefined variable or units: "nod".
@@ -11,40 +12,64 @@ Encontrados 88 scripts .m en C:\Users\j-b-j\Documents\Hekatan Calc 1.0.0\Matlab
 [PASS] Columna_HSS_Grafica.m
 [FAIL 1] Condicionante.m :: class="err">Error in "result = " on line [6]: Incomplete expression.
 [PASS] Control_de_perfiles_tubulares.m
-[PASS] Datos_de_vigas_metalicas.m
+[FAIL 41] Coupled_1D_Beam_Theory.m :: class="err">Error in "γ_z = vp - θ_z" on line [43]: Undefined variable or units: "vp".
+[FAIL 4] Datos_de_vigas_metalicas.m :: class="err"> Undefined 
+[FAIL 13] demo_all_plots.m :: class="err">Error in "x = linspace(0; 2*π; 100)" on line [4]: Invalid function: "linspace".
+[FAIL 41] demo_cft_lab_simple.m :: class="err">Error in "θ = linspace(0; 2*π; 30)" on line [71]: Invalid function: "linspace".
+[FAIL 41] demo_fem_cft_NO_lineal.m :: class="err">Error in "t_total = tic" on line [21]: Undefined variable or units: "tic".
+[FAIL 44] demo_fem_elementos.m :: class="err">Error in "mkdir.(" on line [4]: Incomplete expression.
+[FAIL 46] demo_fem_visual.m :: class="err">Error in "mkdir.(" on line [3]: Incomplete expression.
+[FAIL 41] demo_fem_vm_calcpad_completo.m :: class="err">Error in "t_total = tic" on line [6]: Undefined variable or units: "tic".
+[FAIL 41] demo_fem_vm_calcpad.m :: class="err">Error in "t_total = tic" on line [5]: Undefined variable or units: "tic".
+[FAIL 41] demo_fem_von_mises.m :: class="err">Error in "close all" on line [5]: Invalid syntax: "close all".
 [FAIL 8] demo_lib_shells.m :: class="err">Error in "addpath.(" on line [13]: Incomplete expression.
+[FAIL 41] demo_matlab_plots.m :: class="err">Error in "mkdir.(" on line [4]: Incomplete expression.
+[FAIL 46] demo_placa_base_cft_calcpad.m :: class="err">Error in "mkdir.(" on line [4]: Incomplete expression.
+[FAIL 41] demo_placa_base_cft_FEM.m :: class="err">Error in "close all" on line [11]: Invalid syntax: "close all".
+[FAIL 46] demo_placa_base_cft_lab.m :: class="err">Error in "mkdir.(" on line [4]: Incomplete expression.
+[FAIL 46] demo_placa_base_cft.m :: class="err">Error in "mkdir.(" on line [4]: Incomplete expression.
+[FAIL 43] demo_placa_base.m :: class="err">Error in "mkdir.(" on line [3]: Incomplete expression.
+[FAIL 41] demo_rectangular_slab_fea_DKE.m :: class="err">Error in "t_total = tic" on line [22]: Undefined variable or units: "tic".
+[FAIL 41] demo_rectangular_slab_fea_DKQ.m :: class="err">Error in "t_total = tic" on line [18]: Undefined variable or units: "tic".
+[FAIL 41] demo_rectangular_slab_fea.m :: class="err">Error in "t_total = tic" on line [13]: Undefined variable or units: "tic".
+[FAIL 27] demo_surf_shapes.m :: class="err">Error in "mkdir.(" on line [3]: Incomplete expression.
+[FAIL 23] demo_tfm_viga.m :: class="err">Error in "y_exact = w0 * x * (L^3 - 2*L*x^2 + x^3) / (24*EI)" on line [20]: Undefined variable or units: "w0".
 [FAIL 22] dibujogdl_new.m :: ?
 [FAIL 2] dibujoplano.m :: ?
-[FAIL 9] Dise_acero.m :: class="err">Error in "Mn2 = Cb * (Mp - (Mp - 0.7 * Fy * Sx) .* (Lb - Lp) / (Lr - Lp))" on line [42]: Invalid syntax: ") .".
-[FAIL 3] Diseño_acero_viga.m :: class="err">Error in "Mn_inelastic_LTB = arrayfun.(@(L) Mp - (Mp - 0.7 * Fy * Sx) * (L - Lp) / (Lr - Lp); Lb)" on line [20]: Invalid symbol: "@".
-[FAIL 7] Diseno_de_viga_metalica_acero.m :: class="err">Error in "M_n2 = @(L_b) C_b * (M_p - (M_p - 0.7 * F_yp * Z_x * 6.89476) * ((L_b - L_p) / (L_r - L_p)))" on line [175]: Invalid symbol: "@".
-[FAIL 5] Diseño_de_viga_metalica_acero.m :: class="err">Error in "end" on line [189]: Undefined variable or units: "end".
+[FAIL 7] Dise_acero.m :: class="err">Error in "Mn2 = Cb * (Mp - hprod((Mp - 0.7 * Fy * Sx); (Lb - Lp)) / (Lr - Lp))" on line [27]: Argument must be matrix.
+[FAIL 3] Diseño_acero_viga.m :: class="err">Error in "Mn_inelastic_LTB = arrayfun.(@(L) Mp - (Mp - 0.7 * Fy * Sx) * (L - Lp) / (Lr - Lp); Lb)" on line [14]: Invalid symbol: "@".
+[FAIL 7] Diseno_de_viga_metalica_acero.m :: class="err">Error in "M_n2 = @(L_b) C_b * (M_p - (M_p - 0.7 * F_yp * Z_x * 6.89476) * ((L_b - L_p) / (L_r - L_p)))" on line [137]: Invalid symbol: "@".
+[FAIL 6] Diseño_de_viga_metalica_acero.m :: class="err">Error in "M_n = @(L_n) switch (true)" on line [144]: Invalid symbol: "@".
+[PASS] draw_riemann.m
+[FAIL 3] Ejemplo_1_operaciones_simbolicas.m :: class="err">Error in "I_min_sym = simplify.(P*L^3 / (3*E*δ_max))" on line [10]: Undefined variable or units: "E".
 [FAIL 1] Ejemplo_1.m :: class="err">Error in "CG = Unique_funcion.(nod; Y)" on line [8]: Index must be scalar.
+[FAIL 19] Ejemplo_2_memoria_calculo.m :: class="err">Error in "RA = q*L/2" on line [24]: Undefined variable or units: "q".
 [PASS] Ejemplo_2.m
-[FAIL 2] Ejemplo_de_columna_compuesta_de_acero.m :: class="err">Error in "Seccion = " on line [15]: Incomplete expression.
+[FAIL 2] Ejemplo_de_columna_compuesta_de_acero.m :: class="err">Error in "Seccion = " on line [10]: Incomplete expression.
 [FAIL 12] Ejemplo_funcion_unique_en_matlab.m :: class="err">Error in "ai = []" on line [7]: Invalid syntax: "[ ]".
 [FAIL 1] Ejemplo_funcion_unique.m :: class="err">Error in "[a; b; c] = unique(Y)" on line [5]: Invalid function: "unique".
-[FAIL 47] eJEMPLO1.m :: class="err">Error in "[nv;np;nudt;nudcol;nudvg;nudnmc;nod;nr]=geometria_volcar.(sv;sp;Lvi;Lvd)" on line [24]: The assignment '=' must be preceded by custom function or variable.
-[FAIL 47] Etabs_portico_plano_irregular_Sistema_mixto_con_columnas_CFT_Sra_Victoria.m :: class="err">Error in "[nv;np;nudt;nudcol;nudvg;nudnmc;nod;nr]=geometria_volcar.(sv;sp;Lvi;Lvd)" on line [24]: The assignment '=' must be preceded by custom function or variable.
-[FAIL 47] Etabs_portico_plano_irregular_Sistema_mixto_con_columnas_CFT.m :: class="err">Error in "[nv;np;nudt;nudcol;nudvg;nudnmc;nod;nr]=geometria_volcar.(sv;sp;Lvi;Lvd)" on line [24]: The assignment '=' must be preceded by custom function or variable.
+[FAIL 47] eJEMPLO1.m :: class="err">Error in "[nv;np;nudt;nudcol;nudvg;nudnmc;nod;nr]=geometria_volcar.(sv;sp;Lvi;Lvd)" on line [19]: The assignment '=' must be preceded by custom function or variable.
+[FAIL 47] Etabs_portico_plano_irregular_Sistema_mixto_con_columnas_CFT_Sra_Victoria.m :: class="err">Error in "[nv;np;nudt;nudcol;nudvg;nudnmc;nod;nr]=geometria_volcar.(sv;sp;Lvi;Lvd)" on line [19]: The assignment '=' must be preceded by custom function or variable.
+[FAIL 47] Etabs_portico_plano_irregular_Sistema_mixto_con_columnas_CFT.m :: class="err">Error in "[nv;np;nudt;nudcol;nudvg;nudnmc;nod;nr]=geometria_volcar.(sv;sp;Lvi;Lvd)" on line [19]: The assignment '=' must be preceded by custom function or variable.
 [FAIL 41] Etabs_Sistema_mixto_con_columnas_CFT_Sra_Victoria_1.m :: class="err">Error in "Seccion = " on line [9]: Incomplete expression.
 [FAIL 39] Etabs_Sistema_mixto_con_columnas_CFT_Sra_Victoria_uno.m :: class="err">Error in "Seccion = " on line [8]: Incomplete expression.
 [FAIL 41] Etabs_Sistema_mixto_con_columnas_CFT_Sra_Victoria.m :: class="err">Error in "Seccion = " on line [7]: Incomplete expression.
 [FAIL 41] Etabs_Sistema_mixto_con_columnas_CFT.m :: class="err">Error in "Seccion = " on line [8]: Incomplete expression.
 [FAIL 41] Etabs_Sistema_mixto.m :: class="err">Error in "Seccion = " on line [7]: Incomplete expression.
 [FAIL 41] ETABS.m :: class="err">Error in "AttachToInstance = false.()" on line [6]: Invalid syntax: "( )".
-[FAIL 41] FMAT_Modal_Espectral.m :: class="err">Error in "[nv;np;nudt;nudcol;nudvg;nudnmc;nod;nr]=geometria_volcar.(sv;sp;Lvi;Lvd)" on line [18]: The assignment '=' must be preceded by custom function or variable.
+[FAIL 18] Flexural_Stiffness_Matrix.m :: class="err">Error in "N1 = 1 - 3*ξ^2 + 2*ξ^3" on line [42]: Undefined variable or units: "ξ".
+[FAIL 41] FMAT_Modal_Espectral.m :: class="err">Error in "[nv;np;nudt;nudcol;nudvg;nudnmc;nod;nr]=geometria_volcar.(sv;sp;Lvi;Lvd)" on line [15]: The assignment '=' must be preceded by custom function or variable.
 [FAIL 6] Funcion_ejemplo_unique_1.m :: class="err">Error in "unique_elements = []" on line [3]: Invalid syntax: "[ ]".
 [FAIL 6] Funcion_ejemplo_unique.m :: class="err">Error in "unique_elements = []" on line [3]: Invalid syntax: "[ ]".
 [FAIL 7] generarColumnasVigas.m :: class="err">Error in "nudt = nudcol + nudvg" on line [20]: Undefined variable or units: "nudcol".
 [FAIL 10] geometria_volcar.m :: class="err">Error in "nv=len(sv)" on line [30]: Undefined variable or units: "sv".
 [FAIL 10] geometria_volcar1.m :: class="err">Error in "nv=len(sv)" on line [30]: Undefined variable or units: "sv".
-[FAIL 33] glinea_portico_volcar.m :: class="err">Error in "xa=vector(nv+1)" on line [25]: Undefined variable or units: "nv".
+[FAIL 34] glinea_portico_volcar.m :: class="err">Error in "xa=vector(nv+1)" on line [25]: Undefined variable or units: "nv".
 [FAIL 25] gn_portico_volcar.m :: class="err">Error in "NI=vector(nudt)" on line [23]: Undefined variable or units: "nudt".
 [FAIL 12] IA_col_Acero_ETABS.m :: class="err">Error in "hconcreto = hc - 2 * tc" on line [12]: Undefined variable or units: "hc".
 [FAIL 3] IA_viga_acero.m :: class="err">Error in "A = 2 * (bf * tf) + (hw - 2 * tf) * tw" on line [10]: Undefined variable or units: "bf".
 [PASS] Inercia_columna_hueca_acero.m
-[FAIL 3] Inercia_de_columna_CFT_ETABS.m :: class="err">Error in "Seccion = " on line [34]: Incomplete expression.
+[FAIL 3] Inercia_de_columna_CFT_ETABS.m :: class="err">Error in "Seccion = " on line [28]: Incomplete expression.
 [PASS] Inercia_de_columna_hueca.m
 [PASS] Inercia_de_una_viga_seccion_H.m
 [FAIL 56] klateral.m :: class="err">Error in "nv = len(sv)" on line [3]: Undefined variable or units: "sv".
@@ -55,50 +80,168 @@ Encontrados 88 scripts .m en C:\Users\j-b-j\Documents\Hekatan Calc 1.0.0\Matlab
 [FAIL 6] Matriz_dentro_de_n_subindices_de_vectores.m :: class="err">Error in "B = cell.(len(A); 1)" on line [6]: Argument must be vector.
 [FAIL 9] myUnique.m :: class="err">Error in "unique_elements = []" on line [3]: Invalid syntax: "[ ]".
 [PASS] Operaciones_Funcion_unique.m
-[FAIL 4] Plane.m :: class="err">Error in "K = K + w_g.ig * transpose(B) * D * B * t * abs(detJ)" on line [65]: Missing operand.
-[FAIL 1] Portico_funcion.m :: class="err">Error in "[nv;np;nudt;nudcol;nudvg;nudnmc;nod;nr]=geometria_volcar.(sv;sp;Lvi;Lvd)" on line [13]: The assignment '=' must be preceded by custom function or variable.
-[FAIL 10] Portico_mixto_sra_victoria.m :: class="err">Error in "Es" on line [18]: Undefined variable or units: "Es".
-[FAIL 4] Predimensionamiento_estructura_metalica.m :: class="err">Error in "clasificacion_ala_x = " on line [59]: Incomplete expression.
+[FAIL 12] Operaciones_Simbolicas.m :: class="err">Error in "f = x^3 + 2*x^2 - 5*x + 7" on line [20]: Undefined variable or units: "x".
+[FAIL 29] Patrones_Multilinea.m :: class="err">Error in "nombre = " on line [15]: Incomplete expression.
+[PASS] Plane.m
+[FAIL 1] Portico_funcion.m :: class="err">Error in "[nv;np;nudt;nudcol;nudvg;nudnmc;nod;nr]=geometria_volcar.(sv;sp;Lvi;Lvd)" on line [10]: The assignment '=' must be preceded by custom function or variable.
+[FAIL 11] Portico_mixto_sra_victoria.m :: class="err">Error in "Es" on line [18]: Undefined variable or units: "Es".
+[FAIL 4] Predimensionamiento_estructura_metalica.m :: class="err">Error in "clasificacion_ala_x = " on line [46]: Incomplete expression.
 [FAIL 1] Pruieba_de_valores_de_Unique.m :: class="err">Error in "CG = Unique_funcion.(nod; Y)" on line [8]: Index must be scalar.
+[PASS] Rectangular_Slab_FEA.m
 [FAIL 56] rlaxinfi.m :: class="err">Error in "nv = len(sv)" on line [23]: Undefined variable or units: "sv".
-[FAIL 81] shear_wall_q4.m :: class="err">Error in "ce.(1; 1) = coords.(ne1; 1)" on line [97]: Index out of range: 0, 1.
-[FAIL 39] Sin_funciones_de_matlab_unique.m :: class="err">Error in "ai = []" on line [7]: Invalid syntax: "[ ]".
+[FAIL 9] run_no_lineal_batch.m :: class="err">Error in "figs = sort(findall.(0; " on line [7]: Incomplete expression.
+[FAIL 9] run_slab_batch.m :: class="err">Error in "figs = sort(findall.(0; " on line [5]: Incomplete expression.
+[FAIL 41] shear_wall_q4.m :: class="err">Error in "Kred = K.(free_dofs; free_dofs)" on line [171]: Index must be scalar.
+[FAIL 40] Sin_funciones_de_matlab_unique.m :: class="err">Error in "ai = []" on line [7]: Invalid syntax: "[ ]".
+[PASS] slider_riemann.m
+[FAIL 1] test_a_semi.m :: class="err">Error in "C = hp(A; A)" on line [2]: Unexpected delimiter ';'.
+[FAIL 4] test_all_fixes.m :: class="err">Error in "xf = xg.(:)" on line [6]: Invalid format string: ).
+[FAIL 1] test_alone.m :: class="err">Error in "C = hp(A; B)" on line [2]: Unexpected delimiter ';'.
+[FAIL 3] test_backslash_for.m :: class="err">Error in "x = A \ b" on line [5]: Matrix dimensions do not match.
+[PASS] test_bug_range_standalone.m
+[PASS] test_bug_w_g_index.m
+[FAIL 1] test_cell_end.m :: class="err">Error in "c = {}" on line [1]: Invalid symbol: "{".
+[FAIL 3] test_cholesky.m :: class="err">Error in "x = A \ b" on line [5]: Matrix dimensions do not match.
 [FAIL 1] test_combined.m :: ?
 [PASS] test_continue_top.m
 [FAIL 3] test_control_flow.m :: ?
+[PASS] test_copy_semantics.m
+[FAIL 2] test_debug_mesh.m :: class="err">Error in "V = [x" on line [5]: Missing vector closing bracket "]".
+[PASS] test_delaunay.m
+[FAIL 1] test_diff_semi.m :: class="err">Error in "C = hp(A; B)" on line [3]: Unexpected delimiter ';'.
+[PASS] test_disp_fprintf.m
+[PASS] test_dot_index_variants.m
 [PASS] test_ens_real.m
-[FAIL 14] test_ensemble.m :: class="err">Error in "K.(dofs.ii; dofs.jj) = K.(dofs.ii; dofs.jj) + ke.(ii; jj)" on line [18]: Index out of range: 1, 0.
+[PASS] test_ensemble.m
 [PASS] test_ensemble2.m
 [PASS] test_ensemble3.m
 [PASS] test_ensemble4.m
 [PASS] test_eye.m
-[PASS] test_fn_if.m
+[FAIL 1] test_fn_if.m :: ?
 [PASS] test_for_idx.m
+[PASS] test_for_suppress.m
 [FAIL 1] test_func_load.m :: class="err">Error in "A = q4_membrane.(2549290.5; 0.2; 0.2; [0;0| 5;0| 5;3| 0;3])" on line [2]: Invalid number of indexes.
+[FAIL 1] test_graphics_all.m :: class="err"">Error in "$Plot{sin(t).i|cos(t).i @ i = 1 : len(sin(t))}" on line [145]: Error parsing "i" as units.** plot3 — hélice 3D 
+&nbsp;
+(figure) 
+scatter3.(X.(:); Y.(:); Z.(:))
+[PASS] Test_graphics.m
+[PASS] test_greek.m
+[PASS] test_greek2.m
+[FAIL 2] test_helpers.m :: class="err">Error in "y = helperA(x)" on line [2]: Invalid function: "helperA".
+[FAIL 1] test_hold_mini.m :: ?
+[FAIL 1] test_hp_meshgrid.m :: class="err">Error in "A = hp(X; X)" on line [2]: Unexpected delimiter ';'.
+[FAIL 2] test_hp_nested_mesh.m :: class="err">Error in "A = hp(X; X) + hp(Y; Y)" on line [2]: Unexpected delimiter ';'.
+[FAIL 3] test_hp_nested.m :: class="err">Error in "C1 = hp(A; A)" on line [3]: Unexpected delimiter ';'.
+[PASS] test_hp.m
 [PASS] test_idx.m
 [PASS] test_if_for.m
 [PASS] test_if.m
+[PASS] test_inline_comments.m
+[FAIL 2] test_inline_if_end.m :: class="err">Error in "x &gt; 0, y = y + 1" on line [4]: Error parsing "," as units.
+[FAIL 2] test_inner_semi.m :: class="err">Error in "B = hp(A; A)" on line [2]: Unexpected delimiter ';'.
+[FAIL 2] test_isolate.m :: class="err">Error in "square = @(x) hprod(x; x)" on line [2]: Invalid symbol: "@".
+[PASS] test_just_x.m
 [PASS] test_ke_single.m
+[PASS] test_lab_bugs_fixed.m
+[PASS] test_lab_bugs_minimal.m
+[PASS] test_lab_dotstar.m
+[PASS] test_lab_fig1.m
+[PASS] test_lab_fig2.m
+[PASS] test_lab_fig3.m
+[PASS] test_lab_followup.m
+[FAIL 1] test_lab_hp_direct.m :: class="err">Error in "C = hp(A; B)" on line [5]: Unexpected delimiter ';'.
+[FAIL 2] test_lab_hp_funcs.m :: class="err">Error in "Za = hp(sin(X); cos(Y))" on line [5]: Unexpected delimiter ';'.
+[FAIL 3] test_lab_hp_funcs2.m :: class="err">Error in "H1 = hp(A; B)" on line [5]: Unexpected delimiter ';'.
+[PASS] test_lab_subset.m
+[PASS] test_lab_za_force.m
+[PASS] test_lab_za_only.m
+[PASS] test_lab_za_value.m
+[FAIL 1] test_loops_matrix.m :: class="err">Error in "grade = " on line [58]: Incomplete expression.
+[FAIL 41] test_matlab_all_graphics.m :: class="err">Error in "outdir = " on line [8]: Incomplete expression.
+[FAIL 41] test_matlab_full_graphics.m :: class="err">Error in "sap2000_cmap = [ 0.000, 0.000, 1.000" on line [9]: Error parsing "," as units.
+[PASS] Test_Matlab.m
+[PASS] test_matrix_eval.m
+[FAIL 4] test_mesh_cdata.m :: class="err">Error in "x = xg.(:)" on line [3]: Invalid format string: ).
+[PASS] test_meshgrid.m
 [PASS] test_min2.m
 [PASS] test_minimal.m
 [FAIL 4] test_multi_out.m :: class="err">Error in "a = x" on line [2]: Undefined variable or units: "x".
-[FAIL 5] test_q4_ke.m :: class="err">Error in "else" on line [20]: Undefined variable or units: "else".
+[FAIL 1] test_no_semi.m :: class="err">Error in "C = hp(A; B)" on line [3]: Unexpected delimiter ';'.
+[FAIL 1] test_one_line.m :: class="err">Error in "C = hp(A; A)" on line [2]: Unexpected delimiter ';'.
+[FAIL 1] test_oneliner.m :: class="err">Error in "C = hp([1; 2| 3; 4]; [5; 6| 7; 8])" on line [1]: Unexpected delimiter ';'.
+[PASS] Test_parrafo.m
+[PASS] test_patch_line.m
+[FAIL 11] test_pure_advanced.m :: class="err">Error in "col2 = A.(:; 2)" on line [5]: Invalid format string: ; 2).
+[FAIL 3] test_pure_engineering.m :: class="err">Error in "x = A \ b" on line [5]: Matrix dimensions do not match.
+[FAIL 5] test_pure_final.m :: class="err">Error in "θ = linspace(0; 2*π; 100)" on line [16]: Invalid function: "linspace".
+[FAIL 5] test_pure_integral.m :: class="err"">Error in "for k = 2:n" on line [4]: Undefined variable or units: "n".Error in "end" on line [6]: "end" without a corresponding "for", "while" or "if".&nbsp;
+[Calcpad Lab] multi-output fu...
+[PASS] test_pure_mvp.m
+[FAIL 5] test_pure_plots.m :: class="err">Error in "x = linspace(0; 2*π; 100)" on line [12]: Invalid function: "linspace".
+[FAIL 21] test_pure_v10.m :: class="err">Error in "f = x^3 + 2*x - 5" on line [5]: Undefined variable or units: "x".
+[FAIL 24] test_pure_v11.m :: class="err">Error in "x1 = linspace(0; 2*π; 100)" on line [6]: Invalid function: "linspace".
+[FAIL 21] test_pure_v12.m :: class="err">Error in "f = x^2 + y*z + 3" on line [5]: Undefined variable or units: "x".
+[FAIL 14] test_pure_v13.m :: class="err">Error in "H = tf.([1]; [m; c; k])" on line [8]: Index must be scalar.
+[FAIL 15] test_pure_v14.m :: class="err">Error in "H_ss = ss.(A; B; C; D)" on line [13]: Invalid number of indexes.
+[FAIL 16] test_pure_v15.m :: class="err">Error in "K_lqr = lqr.(A_sys; B_sys; Q; R)" on line [10]: Invalid number of indexes.
+[FAIL 12] test_pure_v16.m :: class="err">Error in "sum_id = sin(a + b)" on line [6]: Undefined variable or units: "b".
+[FAIL 16] test_pure_v17.m :: class="err">Error in "ii = []" on line [7]: Invalid syntax: "[ ]".
+[FAIL 10] test_pure_v18.m :: class="err">Error in "A3 = zeros3.(2; 3; 4)" on line [4]: Invalid number of indexes.
+[FAIL 13] test_pure_v19.m :: class="err">Error in "D = [x; 0| 0; y]" on line [7]: Undefined variable or units: "x".
+[FAIL 14] test_pure_v20.m :: class="err">Error in "s1 = " on line [4]: Incomplete expression.
+[FAIL 4] test_pure_v21.m :: class="err">Error in "xp2 = p2.x" on line [28]: Undefined variable or units: "p2.x".
+[FAIL 9] test_pure_v22_sparse.m :: class="err">Error in "K1 = sparse.M" on line [5]: Undefined variable or units: "sparse.M".
+[FAIL 5] test_pure_v23.m :: class="err">Error in "sum_ab = a + b" on line [55]: Undefined variable or units: "b".
+[FAIL 28] test_pure_v24.m :: class="err">Error in "e1 = x + x" on line [6]: Undefined variable or units: "x".
+[FAIL 19] test_pure_v25.m :: class="err">Error in "e1 = (a + b) * x" on line [6]: Undefined variable or units: "b".
+[FAIL 21] test_pure_v26.m :: class="err">Error in "e1 = x - 1" on line [6]: Undefined variable or units: "x".
+[FAIL 11] test_pure_v27.m :: class="err">Error in "sol1 = dsolve.(k; y; t)" on line [7]: Invalid number of indexes.
+[FAIL 9] test_pure_v3.m :: class="err">Error in "p = polyfit.(x; y; 2)" on line [7]: Invalid number of indexes.
+[FAIL 20] test_pure_v4.m :: class="err">Error in "positives = data.(data &gt; 0)" on line [5]: Index must be scalar.
+[FAIL 20] test_pure_v5.m :: class="err">Error in "root1 = fzero.(@(x) cos(x) - x; [0; 1])" on line [5]: Invalid symbol: "@".
+[FAIL 14] test_pure_v6.m :: class="err">Error in "vdp = @(t; y) [y.2| μ*(1 - y.1^2)*y.2;- y.1]" on line [5]: Invalid symbol: "@".
+[FAIL 20] test_pure_v7.m :: class="err">Error in "F = @(v) [v.1^2;+ v.2^2;- 1| v.1;- v.2]" on line [5]: Invalid symbol: "@".
+[FAIL 15] test_pure_v8.m :: class="err">Error in "expA = expm.(A * π/2)" on line [9]: Index must be scalar.
+[FAIL 18] test_pure_v9.m :: class="err">Error in "f = x^3 + 2*x^2 - 5*x + 1" on line [5]: Undefined variable or units: "x".
+[PASS] test_q4_ke.m
+[FAIL 20] test_render_riemann.m :: class="err">Error in "here = fileparts.(mfilename.(" on line [3]: Incomplete expression.
+[FAIL 1] test_semi_nested.m :: class="err">Error in "C = sin(sqrt(hp(A; A) + hp(A; A)))" on line [2]: Unexpected delimiter ';'.
 [FAIL 1] test_simple_func.m :: class="err">Error in "A = q4_simple.(100; 2)" on line [1]: Index target must be matrix.
 [PASS] test_simple_print.m
-[FAIL 6] test_swq4_debug.m :: class="err">Error in "ce.(1; 1) = coords.(ne1; 1)" on line [61]: Undefined variable or units: "ne1".
+[FAIL 1] test_simple_semi.m :: class="err">Error in "C = hp(A; A)" on line [2]: Unexpected delimiter ';'.
+[FAIL 3] test_sp1.m :: class="err">Error in "K = sparse.M" on line [2]: Undefined variable or units: "sparse.M".
+[FAIL 3] test_sparse_min.m :: class="err">Error in "K = sparse.(ii; jj; ss; 3; 3)" on line [4]: Invalid number of indexes.
+[PASS] test_starstar.m
+[PASS] test_suppress.m
+[FAIL 8] test_swq4_debug.m :: class="err">Error in "ce.(1; 1) = coords.(ne1; 1)" on line [61]: Undefined variable or units: "ne1".
+[PASS] test_take.m
+[FAIL 1] test_trail_space.m :: class="err">Error in "C = hp(A; B)" on line [3]: Unexpected delimiter ';'.
+[FAIL 1] test_trunc_100.m :: class="err">Error in "t_total = tic" on line [21]: Undefined variable or units: "tic".
+[FAIL 41] test_trunc_200.m :: class="err">Error in "t_total = tic" on line [21]: Undefined variable or units: "tic".
+[FAIL 1] test_trunc_50.m :: class="err">Error in "t_total = tic" on line [21]: Undefined variable or units: "tic".
+[PASS] test_values.m
+[PASS] test_z_semi.m
+[PASS] Test.m
+[PASS] trace_test.m
 [FAIL 12] Unique_funcion_operacion.m :: class="err">Error in "ai = []" on line [7]: Invalid syntax: "[ ]".
+[FAIL 2] Unique_funcion.m :: ?
 [FAIL 8] vc.m :: class="err">Error in "mbr=len(NI)" on line [15]: Undefined variable or units: "NI".
+[FAIL 19] Viga_Libro.m :: class="err">Error in "RA = q*L/2" on line [9]: Undefined variable or units: "q".
+[FAIL 19] Viga_Memoria_Calculo.m :: class="err">Error in "RA = q*L/2" on line [24]: Undefined variable or units: "q".
+[FAIL 19] Viga_Simplemente_Apoyada.m :: class="err">Error in "RA = q*L/2" on line [23]: Undefined variable or units: "q".
+[FAIL 8] W1_barra_axial.m :: class="err">Error in "K = sparse.(N_nodes; N_nodes)" on line [28]: Index target must be matrix.
 
 --- PASS list (candidatos para Examples/from-matlab-prueba/) ---
 
 --- FAIL top-10 errores más frecuentes ---
-  (4×) ?
+  (7×) ?
+  (5×) class="err">Error in "t_total = tic" on line [21]: Undefined variable or units: "tic".
+  (5×) class="err">Error in "mkdir.(" on line [4]: Incomplete expression.
+  (3×) class="err">Error in "mkdir.(" on line [3]: Incomplete expression.
   (3×) class="err">Error in "ai = []" on line [7]: Invalid syntax: "[ ]".
-  (3×) class="err">Error in "[nv;np;nudt;nudcol;nudvg;nudnmc;nod;nr]=geometria_volcar.(sv;sp;Lvi;Lvd)" on line [24]: The assignment '=' must be preceded by custom function or variable.
+  (3×) class="err">Error in "[nv;np;nudt;nudcol;nudvg;nudnmc;nod;nr]=geometria_volcar.(sv;sp;Lvi;Lvd)" on line [19]: The assignment '=' must be preceded by custom function or variable.
   (3×) class="err">Error in "unique_elements = []" on line [3]: Invalid syntax: "[ ]".
-  (2×) class="err">Error in "CG = Unique_funcion.(nod; Y)" on line [8]: Index must be scalar.
-  (2×) class="err">Error in "Seccion = " on line [8]: Incomplete expression.
-  (2×) class="err">Error in "Seccion = " on line [7]: Incomplete expression.
-  (2×) class="err">Error in "nv=len(sv)" on line [30]: Undefined variable or units: "sv".
-  (1×) class="err">Error in "t_jit = toc" on line [49]: Undefined variable or units: "toc".
-  (1×) class="err">Error in "CG=matrix(nod; 3)" on line [16]: Undefined variable or units: "nod".
+  (3×) class="err">Error in "C = hp(A; A)" on line [2]: Unexpected delimiter ';'.
+  (3×) class="err">Error in "x = A \ b" on line [5]: Matrix dimensions do not match.
+  (3×) class="err">Error in "C = hp(A; B)" on line [3]: Unexpected delimiter ';'.

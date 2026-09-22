@@ -1,0 +1,43 @@
+1 scalar_math = 8.4488919143
+
+2 poly = 9.0000000000
+
+3 for_loop = 333832500.0000000000
+
+4 while_loop = 12367.0000000000
+
+5 break_continue = 1079.0000000000
+
+6 recursion = 144.0000000000
+
+7 vec_build_sum = 9.2503884674
+
+8 vec_dot = 84575.0000000000
+
+9 matmul = 69.0000000000
+
+10 transpose = 10.0000000000
+
+11 elementwise = 25.0000000000
+
+12 mat_add_sub = 5.0000000000
+
+13 inverse = 0.7000000000
+
+14 linsolve = 5.0000000000
+
+15 norm = 13.0000000000
+
+16 reduce_max = 185.0000000000
+
+17 index_col = 30.0000000000
+
+18 multi_output = 109.0000000000
+
+19 empty_true = 30.0000000000
+
+20 empty_false = -1.0000000000
+
+21 newton = 1.4142135624
+
+22 nested_loops = 1320.0000000000

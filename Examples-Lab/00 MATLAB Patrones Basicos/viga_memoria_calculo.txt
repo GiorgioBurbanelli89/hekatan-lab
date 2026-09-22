@@ -1,0 +1,113 @@
+03_Viga_Memoria_Calculo.m
+
+=========================================================================
+
+EJEMPLO 3 — Memoria de calculo estructural en estilo libro
+
+=========================================================================
+
+Caso practico: viga simplemente apoyada con carga uniforme.
+
+Demuestra como combinar prosa fluida + ecuaciones simbolicas + resultados
+
+numericos en un documento legible tipo libro de mecanica.
+
+Tecnicas usadas:
+
+- syms, diff, int, simplify, subs para algebra simbolica
+
+- char(expr) para insertar simbolico en fprintf con %s
+
+- Caso numerico al final (subs encadenadas — Hekatan Lab MVP no
+
+soporta cell arrays en subs)
+
+Ejecutar:
+
+- MATLAB: F5
+
+- Hekatan Lab CLI: HekatanLabCli.exe 03_Viga_Memoria_Calculo.m
+
+=========================================================================
+
+Consideremos una viga simplemente apoyada de luz L sometida a una carga
+
+uniformemente distribuida q por unidad de longitud. Por la simetria del
+
+sistema, las reacciones verticales en ambos apoyos son iguales y valen
+
+R_A = R_B = L·q2, repartiendo la carga total q*L entre los dos puntos
+
+de apoyo.
+
+El esfuerzo cortante varia linealmente a lo largo de la viga, partiendo
+
+del valor maximo positivo en el apoyo izquierdo y descendiendo hasta el
+
+valor negativo de igual magnitud en el apoyo derecho. Su expresion es
+
+V(x) = 12·q·(L - 2·x), que se anula exactamente en el centro de la luz, en x = L/2.
+
+El momento flector, obtenido al integrar el cortante respecto a x, sigue
+
+una ley parabolica con concavidad hacia arriba. Tomamos por convencion
+
+positivo el momento que produce traccion en la fibra inferior. La
+
+expresion analitica es M(x) = q·x·(L - x)2, que alcanza su valor maximo justo en
+
+el punto donde el cortante se anula, es decir, en x = L/2. Sustituyendo
+
+obtenemos el momento maximo M_max = L²·q8, cantidad que define el
+
+dimensionado a flexion de la viga.
+
+La deflexion de la viga se obtiene mediante doble integracion de la
+
+ecuacion diferencial de la elastica E*I*y''(x) = M(x). La primera
+
+integracion produce E*I*y'(x) = 16·q2EI·(-2·x + 3·L)·E·I·x² + C1, donde C1 es una constante
+
+de integracion a determinar. Una segunda integracion, junto con las
+
+condiciones de contorno y(0) = y(L) = 0 propias de los apoyos simples,
+
+conduce despues de algebra elemental al resultado clasico para la
+
+flecha en el centro: delta_max = -5·L⁴·q384·E·I. El signo negativo indica que el
+
+desplazamiento se produce hacia abajo, en el sentido de la carga.
+
+Para el dimensionado a flexion segun el criterio de tensiones admisibles,
+
+imponemos que la tension maxima sigma = M_max/W no supere la tension
+
+admisible del material sigma_adm. Despejando, el modulo resistente
+
+minimo requerido es W_req = M_max/sigma_adm = L²·q8·σ_adm. Cualquier perfil
+
+comercial con un W superior a este valor satisface la condicion de
+
+resistencia.
+
+Apliquemos estas formulas a un caso practico: una viga de luz L = 6 m que
+
+soporta una carga uniforme q = 15 kN/m, ejecutada en acero S235 con
+
+sigma_adm = 235 MPa y modulo elastico E = 210 GPa. El momento maximo
+
+resulta M_max = 67.50 kN*m, valor que exige un modulo resistente minimo
+
+de W_req = 287.23 cm^3. Un perfil IPE 300, cuyo modulo W es del orden de
+
+557 cm^3, satisface holgadamente la verificacion a resistencia.
+
+Verifiquemos finalmente la deformacion. Con la inercia del IPE 300
+
+I = 8.36e-5 m^4, la flecha maxima en el centro de la luz vale
+
+delta_max = 14.42 mm, lo que equivale a una relacion luz/flecha de L/416.
+
+Comparado con el limite habitual de L/300 para vigas de piso, la viga
+
+cumple con margen el criterio de servicio.

@@ -1,8 +1,8 @@
-; Inno Setup Script para Calcpad-Lab
+﻿; Inno Setup Script para Calcpad-Lab
 ; Genera un instalador setup.exe
 
 #define MyAppName "Hekatan Lab"
-#define MyAppVersion "1.3.16"
+#define MyAppVersion "1.3.20"
 #define MyAppPublisher "Jorge Burbano"
 #define MyAppURL "https://github.com/GiorgioBurbanelli89/hekatan-lab"
 #define MyAppExeName "HekatanLab.exe"

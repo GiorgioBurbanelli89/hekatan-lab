@@ -1,0 +1,1 @@
+MATLAB K(20x20) solve con unidades: 1030.5671 ms/iter

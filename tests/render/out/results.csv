@@ -1,0 +1,4 @@
+idx;rel;kind;status;exit;secs;pngbytes;errline;err
+1;18 FEA Slab\benchmark_platethin.m;script;TIMEOUT;TIMEOUT;120.1;0;;
+2;18 FEA Slab\doble_integral_Ke.m;script;TIMEOUT;TIMEOUT;120;0;;
+3;18 FEA Slab\mesa_torsion_dke_completo.m;script;TIMEOUT;TIMEOUT;120;0;;

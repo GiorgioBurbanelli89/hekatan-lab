@@ -1,0 +1,8 @@
+TOTAL=5  OK=0  NOFIG=0  ERROR=0  NONZERO=0  TIMEOUT=5  EMPTY=0
+
+Revisar (no-OK):
+  TIMEOUT  18 FEA Slab\benchmark_platethin.m  
+  TIMEOUT  18 FEA Slab\doble_integral_Ke.m  
+  TIMEOUT  18 FEA Slab\mesa_torsion_dke_completo.m  
+  TIMEOUT  18 FEA Slab\paso1_malla_bfs.m  
+  TIMEOUT  18 FEA Slab\rectangular_slab_bfs.m  

@@ -309,6 +309,77 @@ namespace Calcpad.Core
             return $"<span class=\"dvcs\">{FormatLeftCurl(level)}<span class=\"dvs\">{s}</span></span>";
         }
 
+        // ── Matriz TRUNCADA y ARRASTRABLE ──────────────────────────────────────────────
+        // Dibuja solo unas pocas filas/columnas, pero mete TODAS las celdas en data-hk-cells;
+        // el JS de doc/template.html redibuja la rejilla cuando se tira de la manija.
+        // Mismo criterio que Hekatan Lab (MatlabHtmlWriter) y Hekatan Py (PythonHtmlWriter).
+        private const int HkMaxCeldas = 4000;
+
+        private static string HkMatriz(string[][] celdas, int vis)
+        {
+            int nr = celdas.Length, nc = nr == 0 ? 0 : celdas[0].Length;
+            if (nr == 0 || nc == 0) return "[]";
+            bool truncR = nr > vis, truncC = nc > vis;
+            int showR = truncR ? vis : nr, showC = truncC ? vis : nc;
+
+            var sb = new StringBuilder();
+            sb.Append("<span class=\"matrix\"");
+            if (truncR || truncC)
+                sb.Append($" data-hk-r=\"{nr}\" data-hk-c=\"{nc}\"")
+                  .Append($" data-vis-rows=\"{showR}\" data-vis-cols=\"{showC}\"")
+                  .Append($" data-hk-cells='{HkJson(celdas)}'");
+            sb.Append('>');
+            for (int i = 0; i < showR; i++)
+            {
+                int ri = (truncR && i == showR - 1) ? nr - 1 : i;
+                sb.Append("<span class=\"tr\"><span class=\"td\"></span>");
+                for (int j = 0; j < showC; j++)
+                {
+                    int cj = (truncC && j == showC - 1) ? nc - 1 : j;
+                    string txt;
+                    if (truncR && i == showR - 1 && truncC && j == showC - 2) txt = "⋱";
+                    else if (truncC && j == showC - 2) txt = "⋯";
+                    else if (truncR && i == showR - 2) txt = "⋮";
+                    else txt = celdas[ri][cj];
+                    sb.Append("<span class=\"td\">").Append(txt).Append("</span>");
+                }
+                sb.Append("<span class=\"td\"></span></span>");
+            }
+            if (truncR || truncC)
+                sb.Append("<span class=\"mat-grip\" title=\"Arrastrar para ver mas o menos celdas\"></span>");
+            sb.Append("</span>");
+            return sb.ToString();
+        }
+
+        private static string HkJson(string[][] celdas)
+        {
+            var sb = new StringBuilder("[");
+            for (int i = 0; i < celdas.Length; i++)
+            {
+                if (i > 0) sb.Append(',');
+                sb.Append('[');
+                for (int j = 0; j < celdas[i].Length; j++)
+                {
+                    if (j > 0) sb.Append(',');
+                    sb.Append('"');
+                    foreach (char ch in celdas[i][j] ?? "")
+                    {
+                        if (ch == '"') sb.Append("\\\"");
+                        else if (ch == '\\') sb.Append("\\\\");
+                        else if (ch == '<') sb.Append("\\u003c");
+                        else if (ch == '>') sb.Append("\\u003e");
+                        else if (ch == '&') sb.Append("\\u0026");
+                        else if (ch == '\'') sb.Append("\\u0027");
+                        else if (ch < ' ') sb.Append("\\u").Append(((int)ch).ToString("x4"));
+                        else sb.Append(ch);
+                    }
+                    sb.Append('"');
+                }
+                sb.Append(']');
+            }
+            return sb.Append(']').ToString();
+        }
+
         internal override string FormatMatrix(Matrix matrix)
         {
             var sb = new StringBuilder();
@@ -337,6 +408,38 @@ namespace Calcpad.Core
                                 hasCommonUnit = false;
                         }
                 }
+            }
+
+            // Celda (i,j) ya formateada — se usa igual en el camino normal y en el arrastrable.
+            string Celda(int i, int j)
+            {
+                if (hp_m is not null)
+                {
+                    var d = hp_m.GetValue(i, j);
+                    return FormatReal(d, units?.FormatString, zeroSmallElements && Math.Abs(d) < zeroThreshold);
+                }
+                if (hasCommonUnit)
+                {
+                    var d = matrix[i, j].D;
+                    return FormatReal(d, commonUnit?.FormatString, zeroSmallElements && Math.Abs(d) < zeroThreshold);
+                }
+                return FormatMatrixValue(matrix[i, j], zeroThreshold);
+            }
+
+            // Matriz GRANDE: se dibuja truncada pero ARRASTRABLE (el HTML lleva todas las celdas).
+            int nrTot = matrix.RowCount;
+            if ((nrTot > maxCount || nc > maxCount) && (long)nrTot * nc <= HkMaxCeldas)
+            {
+                var celdas = new string[nrTot][];
+                for (int i = 0; i < nrTot; i++)
+                {
+                    celdas[i] = new string[nc];
+                    for (int j = 0; j < nc; j++) celdas[i][j] = Celda(i, j);
+                }
+                sb.Append(HkMatriz(celdas, maxCount));
+                if (units is not null) sb.Append(HairSpace).Append(units.Html);
+                else if (hasCommonUnit) sb.Append(HairSpace).Append(commonUnit.Html);
+                return sb.ToString();
             }
 
             sb.AppendLine("<span class=\"matrix\">");

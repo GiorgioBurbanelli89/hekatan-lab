@@ -1,0 +1,3 @@
+Plot_Basico_Seno.m — Plot 2D simple de una funcion
+
+Plot generado: sin(x) en [0, 2*pi] con 200 puntos.

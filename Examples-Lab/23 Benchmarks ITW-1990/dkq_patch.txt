@@ -1,0 +1,7 @@
+thx=0,thy=x : w=0.90000 (exacto 0.50000) err=4.00e-01
+
+thx=0,thy=-x : w=0.70000 (exacto 0.50000) err=2.00e-01
+
+thx=x,thy=0 : w=0.80000 (exacto 0.50000) err=3.00e-01
+
+thx=-x,thy=0 : w=0.80000 (exacto 0.50000) err=3.00e-01

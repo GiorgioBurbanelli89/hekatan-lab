@@ -430,9 +430,20 @@ namespace Calcpad.Core.Matlab
             bool truncRow = nr > maxCount;
             bool truncCol = nc > maxCount;
             var sb = new StringBuilder();
-            sb.Append("<span class=\"matrix\">");
             int showR = truncRow ? maxCount : nr;
             int showC = truncCol ? maxCount : nc;
+            // ARRASTRAR: se manda la matriz COMPLETA (HTML de cada celda) para que el JS de la
+            // plantilla pueda redibujarla al tirar de la manija. Sin esto solo se veria lo truncado.
+            string hkAttrs = "";
+            if (truncRow || truncCol)
+            {
+                string celdas = HkCeldasJson(v, nr, nc);
+                if (celdas != null)
+                    hkAttrs = $" data-hk-r=\"{nr}\" data-hk-c=\"{nc}\""
+                            + $" data-vis-rows=\"{showR}\" data-vis-cols=\"{showC}\""
+                            + $" data-hk-cells='{celdas}'";
+            }
+            sb.Append("<span class=\"matrix\"").Append(hkAttrs).Append(">");
             for (int i = 0; i < showR; i++)
             {
                 sb.Append("<span class=\"tr\">");
@@ -470,11 +481,63 @@ namespace Calcpad.Core.Matlab
                 sb.Append("<span class=\"td\"></span>");
                 sb.Append("</span>");
             }
+            if (hkAttrs.Length > 0)
+                sb.Append("<span class=\"mat-grip\" title=\"Arrastrar para ver mas o menos celdas\"></span>");
             sb.Append("</span>");
             // Etiqueta de tamaño cuando truncado
             if (truncRow || truncCol)
                 sb.Append($"<span style=\"font:italic 11px sans-serif;color:#888;margin-left:.5em\">[{nr}×{nc} matrix]</span>");
             return sb.ToString();
+        }
+
+        /// <summary>HTML de UNA celda de la matriz (numero, complejo y su unidad).</summary>
+        private static string HkCelda(MValue v, int i, int j)
+        {
+            if (v.IsComplex)
+            {
+                int idx = i * v.Cols + j;
+                return FormatComplex(v.Data[idx], v.Imag[idx]);
+            }
+            string s = FormatNumber(v.At(i, j));
+            if (v.HasUnitData)
+            {
+                var cu = v.UnitAt(i * v.Cols + j);
+                if (cu != null) s += " " + UnitToHtml(cu.Text);
+            }
+            return s;
+        }
+
+        /// <summary>Todas las celdas en JSON, para poder ARRASTRAR la matriz en el WebView2.
+        /// Tope de seguridad: por encima no se serializa (la matriz se queda solo truncada).</summary>
+        private const int HkMaxCeldas = 4000;
+        private static string HkCeldasJson(MValue v, int nr, int nc)
+        {
+            if ((long)nr * nc > HkMaxCeldas) return null;
+            var sb = new StringBuilder("[");
+            for (int i = 0; i < nr; i++)
+            {
+                if (i > 0) sb.Append(',');
+                sb.Append('[');
+                for (int j = 0; j < nc; j++)
+                {
+                    if (j > 0) sb.Append(',');
+                    sb.Append('"');
+                    foreach (char ch in HkCelda(v, i, j))
+                    {
+                        if (ch == '"') sb.Append("\\\"");
+                        else if (ch == '\\') sb.Append("\\\\");
+                        else if (ch == '<') sb.Append("\\u003c");
+                        else if (ch == '>') sb.Append("\\u003e");
+                        else if (ch == '&') sb.Append("\\u0026");
+                        else if (ch == '\'') sb.Append("\\u0027");
+                        else if (ch < ' ') sb.Append("\\u").Append(((int)ch).ToString("x4"));
+                        else sb.Append(ch);
+                    }
+                    sb.Append('"');
+                }
+                sb.Append(']');
+            }
+            return sb.Append(']').ToString();
         }
 
         /// <summary>Versión compacta para mostrar dentro de structs (sin grandes matrices).</summary>

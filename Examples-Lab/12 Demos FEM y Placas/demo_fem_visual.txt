@@ -1,0 +1,375 @@
+Demo: Visualización FEM realista — placas con flexión y tensiones
+
+============================================================
+
+1. Placa cuadrada simplemente apoyada — flexión (Navier)
+
+w(x,y) = Σ (16q/π⁶D) sin(mπx/a)sin(nπy/b)/(mn((m/a)²+(n/b)²)²)
+
+============================================================
+
+
+1. Placa SS con carga uniforme — flecha (mm)
+
+– 1
+– 0.875
+– 0.75
+– 0.625
+– 0.5
+– 0.375
+– 0.25
+– 0.125
+– 0
+
+x (m): 0 … 4    y (m): 0 … 4    w (mm): -0.499 … -0
+
+============================================================
+
+2. Misma placa con HUECO circular central — NaN trick
+
+============================================================
+
+
+2. Placa con hueco circular — deformada (mm)
+
+– 1
+– 0.875
+– 0.75
+– 0.625
+– 0.5
+– 0.375
+– 0.25
+– 0.125
+– 0
+
+x (m): 0 … 4    y (m): 0 … 4    w (mm): -0.449 … -0
+
+============================================================
+
+3. Losa en L con malla triangular FEM (trisurf)
+
+============================================================
+
+deflexión simulada (mayor hacia la esquina interior)
+
+Filtro triángulos cuyo centroide cae fuera de la L
+
+(centroide por columnas: indexar un vector por una columna preserva la forma)
+
+
+3. Losa en L — malla FEM (T3) con deformada
+
+– NaN
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+
+x (m): 0 … 4    y (m): 0 … 4    w (mm): 0 … 3.2
+
+============================================================
+
+4. Placa circular — coordenadas polares (axisimétrica)
+
+w(r) = qR⁴/(64D) · (1 - (r/R)²)² (simply supported edge)
+
+============================================================
+
+
+4. Placa circular — flexión axisimétrica
+
+– NaN
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+
+x (m): -2 … 2    y (m): -2 … 2    w (mm): -0.228 … -0
+
+============================================================
+
+5. PATCH Q4 — malla de cuadriláteros con tensión von Mises
+
+(cada elemento coloreado por su σ_vm — discontinuo, FEM clásico)
+
+============================================================
+
+Generar malla Q4 5×5
+
+Tensión von Mises simulada (cuadrático con máximo en centro)
+
+Cada elemento Q4 como un patch con su color
+
+saveas: SVG escrito en demo_fem_figs/05_patch_Q4_vm.svg
+
+
+
+
+5. Patch Q4 — tensión von Mises por elemento (FEM)
+x (m)
+y (m)
+0
+
+0.5
+
+1
+
+1.5
+
+2
+
+2.5
+
+3
+
+3.5
+
+4
+
+0
+
+0.5
+
+1
+
+1.5
+
+2
+
+2.5
+
+3
+
+3.5
+
+4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+============================================================
+
+6. Deformada + mapa de momento M_xx (color sobre superficie 3D)
+
+============================================================
+
+M_xx = -D (d2w/dx2 + nu d2w/dy2) -> ya calculado analiticamente arriba (Mxx)
+
+
+6. Deformada coloreada por M_{xx}
+
+– NaN
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+
+x (m): 0 … 4    y (m): 0 … 4    w (mm): -0.499 … -0
+
+============================================================
+
+7. Multi-vista: planta + alzado + iso — subplot
+
+============================================================
+
+
+Isométrica
+
+– NaN
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+
+x: 0 … 4    y: 0 … 4    w: -0.499 … -0
+
+============================================================
+
+8. Patch — geometría irregular custom (sección compuesta)
+
+============================================================
+
+Hormigón (rectángulo exterior)
+
+Hueco rectangular
+
+Armadura inferior (puntos)
+
+Armadura superior
+
+Cotas
+
+saveas: SVG escrito en demo_fem_figs/08_seccion_compuesta.svg
+
+
+
+
+8. Patch — sección compuesta con cotas
+-0.5
+
+0
+
+0.5
+
+1
+
+1.5
+
+2
+
+2.5
+
+3
+
+3.5
+
+4
+
+4.5
+
+0
+
+1
+
+2
+
+3
+
+4
+
+5
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+b = 4 m
+h = 5 m
+
+
+
+Done
+
+
+Planta (top)
+
+– NaN
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+
+x: 0 … 4    y: 0 … 4    Z: -0.499 … -0
+
+
+Alzado x-z (front)
+
+– NaN
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+– Infinity
+
+x: 0 … 4    Y: 0 … 4    w: -0.499 … -0

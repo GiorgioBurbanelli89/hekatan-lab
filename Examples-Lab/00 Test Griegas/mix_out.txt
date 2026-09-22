@@ -1,0 +1,36 @@
+--- vector con DISTINTAS unidades por elemento ---
+ 
+mix =
+ 
+  5*[m]
+ 3*[kN]
+  2*[s]
+ 
+--- acceder a un elemento ---
+ 
+e2 =
+ 
+3*[kN]
+ 
+--- matriz mixta (rigidez con unidades distintas) ---
+ 
+Kmix =
+ 
+[ 3*([kN]/[m]),     2*[kN]]
+[       2*[kN], 5*[kN]*[m]]
+ 
+--- separateUnits sobre vector mixto ---
+ 
+val =
+ 
+ 5
+ 3
+ 2
+ 
+ 
+unt =
+ 
+  [m]
+ [kN]
+  [s]
+ 

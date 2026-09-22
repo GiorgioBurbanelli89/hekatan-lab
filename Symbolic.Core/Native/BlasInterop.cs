@@ -95,10 +95,10 @@ namespace Calcpad.Core
         {
             var asm = typeof(NativeBlas).Assembly;
 
-            // Override opcional: HEKATAN_BLAS = mkl | openblas | managed | off
-            var force = (Environment.GetEnvironmentVariable("HEKATAN_BLAS") ?? "").Trim().ToLowerInvariant();
-            if (force is "managed" or "off" or "none") return;     // todo managed
-            bool allowMkl = force is not ("openblas" or "blas");   // openblas → saltar MKL
+            // MKL SIEMPRE preferido (Intel oneMKL). El override HEKATAN_BLAS que
+            // permitía saltarlo/desactivarlo se eliminó: solo se usa OpenBLAS/managed
+            // si oneMKL real no está presente en la máquina. HEKATAN_MKL_DIR puede
+            // apuntar a una instalación concreta de oneMKL.
 
             // 1) Intel oneMKL real (mkl_rt*.dll) en directorios candidatos.
             //    mkl_rt carga sus satelites (mkl_avx2/mkl_core/libiomp5md…) desde
@@ -110,7 +110,7 @@ namespace Calcpad.Core
                 AppContext.BaseDirectory,                                 // junto al ejecutable
                 @"C:\Program Files\FreeCAD 1.0\bin",                     // fallback: oneMKL de FreeCAD
             };
-            foreach (var dir in allowMkl ? mklDirs : Array.Empty<string>())
+            foreach (var dir in mklDirs)
             {
                 if (string.IsNullOrEmpty(dir) || !Directory.Exists(dir)) continue;
                 string[] hits;

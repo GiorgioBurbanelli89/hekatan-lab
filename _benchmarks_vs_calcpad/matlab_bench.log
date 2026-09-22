@@ -1,0 +1,10 @@
+ 
+To get started, type one of these: helpwin, helpdesk, or demo.
+For product information, visit www.mathworks.com.
+ 
+=== bench_linalg ===
+matmul  2000x2000 : 0.0586 s  | chk=6.681094e+05
+inv SPD 1500x1500 : 0.0714 s  | chk=6.656309e-04
+fft     2^22   : 0.0598 s  | chk=6.389862e+00
+eig sym 1000x1000 : 0.0538 s  | chk=3.441038e+03
+=== fin ===

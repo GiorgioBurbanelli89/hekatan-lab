@@ -1,0 +1,29 @@
+ 
+To get started, type one of these: helpwin, helpdesk, or demo.
+For product information, visit www.mathworks.com.
+ 
+x2           -> 1
+2x           -> 0
+_x           -> 0
+x_2          -> 1
+xsup2        -> 1
+x^2          -> 0
+x-y          -> 0
+x.y          -> 0
+sigma        -> 1
+alpha        -> 1
+for          -> 0
+end          -> 0
+pi           -> 1
+sqrtA        -> 1
+raiz         -> 1
+x y          -> 0
+xdotminus    -> 1
+a__b         -> 1
+fprime_c     -> 1
+ñ           -> 0
+café        -> 0
+x$           -> 0
+X_MAX        -> 1
+n123         -> 1
+namelengthmax = 63

@@ -266,6 +266,20 @@ def main():
         check("todo lo que llaman los Tag existe en el motor",
               [(n, sorted(llamados[n])) for n in desconocidos], [])
 
+        # --- 12bis. el AUTOCOMPLETADO ofrece funciones del motor -----------------
+        # Jorge (17-sep-2026): «cuando escriba debe salir una autoayuda». El popup SI
+        # existia, pero no habia forma de comprobarlo: es OTRA ventana y no sale en las
+        # capturas, asi que «no funciona» parecia cierto. La op `complete` devuelve lo
+        # que el popup ofreceria, y ademas si el editor que lo tiene esta activo: con el
+        # editor clasico (Plegado desmarcado) NO hay autocompletado y nada lo avisa.
+        ac = app.cmd(op="complete", prefix="pl")
+        check("el autocompletado ofrece las funciones de MATLAB",
+              "plot" in (ac.get("primeros") or []), True)
+        check("...y solo funciona con el editor plegable activo", ac.get("plegable"), True)
+        ac2 = app.cmd(op="complete", prefix="ze")
+        check("...y filtra por el prefijo que escribes",
+              all(t.lower().startswith("ze") for t in (ac2.get("primeros") or ["x"])), True)
+
         # --- 12. el .m se calcula con el motor de MATLAB, no con el heredado ----
         # Es el fallo que se vio en Hekatan Python3: el archivo caia al parser de
         # Calcpad y la hoja se llenaba de errores raros ("Missing end", el % de una
