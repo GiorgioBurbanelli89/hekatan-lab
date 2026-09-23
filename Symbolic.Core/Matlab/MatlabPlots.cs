@@ -16,6 +16,13 @@ namespace Calcpad.Core.Matlab
     public static class MatlabPlots
     {
         private static int _plotCounter = 0;
+        private static int _svgClipSeq = 0;   // ids unicos de clipPath por figura SVG
+        private static bool SameSeq(double[] a, double[] b)
+        {
+            if (a == null || b == null || a.Length != b.Length) return false;
+            for (int i = 0; i < a.Length; i++) if (!a[i].Equals(b[i])) return false;
+            return true;
+        }
         /// <summary>ID del último plot emitido (para title/xlabel/etc. post-hoc).</summary>
         public static int LastPlotId => _plotCounter;
         private static readonly CultureInfo Inv = CultureInfo.InvariantCulture;
@@ -1889,8 +1896,11 @@ return {make:make};
             }
             }
             // Clip path para plot area
-            svg.AppendLine($"  <defs><clipPath id='plot'><rect x='{marginL}' y='{marginT}' width='{plotW}' height='{plotH}'/></clipPath></defs>");
-            svg.AppendLine($"  <g clip-path='url(#plot)'>");
+            // id UNICO por figura: con id fijo 'plot' todas las SVG de la pagina usaban el
+            // clipPath de la PRIMERA figura (otro ancho) y recortaban los datos de las demas.
+            string clipId = "plot" + System.Threading.Interlocked.Increment(ref _svgClipSeq).ToString(Inv);
+            svg.AppendLine($"  <defs><clipPath id='{clipId}'><rect x='{marginL.ToString(Inv)}' y='{marginT.ToString(Inv)}' width='{plotW.ToString(Inv)}' height='{plotH.ToString(Inv)}'/></clipPath></defs>");
+            svg.AppendLine($"  <g clip-path='url(#{clipId})'>");
             // Render primitives
             foreach (var p in _figPrims)
             {
@@ -1999,13 +2009,42 @@ return {make:make};
             // ---- LEYENDA (si se llamó legend() y hay curvas con DisplayName) ----
             if (_figShowLegend)
             {
-                var leg = new System.Collections.Generic.List<FigPrim>();
-                foreach (var p in _figPrims)
-                    if (!string.IsNullOrEmpty(p.Name) && (p.Kind == "line2d" || p.Kind == "markers2d")) leg.Add(p);
+                // (prim, nombre, tambien lleva marcador). legend('a','b',...) asigna los nombres a
+                // los objetos EN ORDEN DE CREACION, como MATLAB: cada line/patch/bar es un objeto y
+                // el marcador de un plot(x,y,'o-') es el MISMO objeto que su linea. Antes el SVG
+                // solo miraba DisplayName: legend('a','b') no dibujaba nada en figuras con patch/bar.
+                var leg = new System.Collections.Generic.List<(FigPrim p, string name, bool mk)>();
+                if (_figLegendNames != null && _figLegendNames.Length > 0)
+                {
+                    int li = 0; FigPrim prevObj = null, lastLine = null;
+                    foreach (var p in _figPrims)
+                    {
+                        if (p.Kind != "line2d" && p.Kind != "markers2d" && p.Kind != "patch2d") continue;
+                        bool sameCall = p.Kind == "markers2d" && prevObj != null && prevObj.Kind == "line2d"
+                                        && SameSeq(prevObj.Xs, p.Xs) && SameSeq(prevObj.Ys, p.Ys);
+                        prevObj = p;
+                        if (sameCall)
+                        {
+                            if (leg.Count > 0 && ReferenceEquals(leg[leg.Count - 1].p, lastLine))
+                                leg[leg.Count - 1] = (leg[leg.Count - 1].p, leg[leg.Count - 1].name, true);
+                            continue;
+                        }
+                        lastLine = p;
+                        if (li >= _figLegendNames.Length) break;
+                        string nm = _figLegendNames[li++];
+                        if (!string.IsNullOrEmpty(nm)) leg.Add((p, nm, p.Kind == "markers2d"));
+                    }
+                }
+                else
+                {
+                    foreach (var p in _figPrims)
+                        if (!string.IsNullOrEmpty(p.Name) && (p.Kind == "line2d" || p.Kind == "markers2d"))
+                            leg.Add((p, p.Name, p.Kind == "markers2d"));
+                }
                 if (leg.Count > 0)
                 {
                     int rowH = 18, padx = 8; int boxW = 40;
-                    foreach (var it in leg) boxW = Math.Max(boxW, 44 + (int)(it.Name.Length * 6.6));
+                    foreach (var it in leg) boxW = Math.Max(boxW, 44 + (int)(it.name.Length * 6.6));
                     int boxH = leg.Count * rowH + 8;
                     string loc = (_figLegendLoc ?? "northeast").ToLowerInvariant().Replace("outside", "");
                     int rgt = marginL + plotW - boxW - 8, lft = marginL + 8;
@@ -2023,11 +2062,18 @@ return {make:make};
                     for (int i = 0; i < leg.Count; i++)
                     {
                         var it = leg[i]; int cy = ly + 4 + i*rowH + rowH/2;
-                        string col = it.Kind == "line2d" ? (it.Color ?? "#333") : (it.FaceColor ?? "#333");
-                        svg.AppendLine($"    <line x1='{lx+padx}' y1='{cy}' x2='{lx+padx+24}' y2='{cy}' stroke='{col}' stroke-width='3'/>");
-                        if (it.Kind == "markers2d")
-                            svg.AppendLine($"    <circle cx='{lx+padx+12}' cy='{cy}' r='3' fill='{col}' stroke='{col}'/>");
-                        svg.AppendLine($"    <text x='{lx+padx+30}' y='{cy+4}' font-family='sans-serif' font-size='11' fill='#222'>{EscapeXml(it.Name)}</text>");
+                        var q = it.p;
+                        string col = q.Kind == "line2d" ? (q.Color ?? "#333") : (q.FaceColor ?? "#333");
+                        if (q.Kind == "patch2d")
+                            svg.AppendLine($"    <rect x='{lx+padx+4}' y='{cy-6}' width='16' height='12' fill='{col}' stroke='{q.EdgeColor ?? "#333"}' stroke-width='1'/>");
+                        else if (q.Kind == "line2d")
+                        {
+                            string da = q.Dash == "dash" ? " stroke-dasharray='6,4'" : q.Dash == "dot" ? " stroke-dasharray='2,3'" : q.Dash == "dashdot" ? " stroke-dasharray='6,3,2,3'" : "";
+                            svg.AppendLine($"    <line x1='{lx+padx}' y1='{cy}' x2='{lx+padx+24}' y2='{cy}' stroke='{col}' stroke-width='3'{da}/>");
+                        }
+                        if (it.mk)
+                            svg.AppendLine($"    <circle cx='{lx+padx+12}' cy='{cy}' r='3.5' fill='{col}' stroke='{col}'/>");
+                        svg.AppendLine($"    <text x='{lx+padx+30}' y='{cy+4}' font-family='sans-serif' font-size='11' fill='#222'>{EscapeXml(it.name)}</text>");
                     }
                 }
             }

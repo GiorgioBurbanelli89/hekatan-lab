@@ -915,7 +915,7 @@ namespace Calcpad.Core.Matlab
             "fprintf","printf","disp","display","warning","error","puts","fputs","fdisp","fflush",
             "figure","clf","close","hold","axis","grid","legend","box","colormap",
             "title","xlabel","ylabel","zlabel","colorbar","sgtitle","caxis","clim",
-            "shading","view","light","lighting","material","camlight","drawnow",
+            "shading","view","light","lighting","material","camlight","drawnow","snapnow",
             "plot","plot3","scatter","scatter3","bar","barh","stem","stairs",
             "polar","polarplot","fill","fill3","patch","line","text",
             "histogram","histogram2","heatmap","contour","contourf","imagesc",

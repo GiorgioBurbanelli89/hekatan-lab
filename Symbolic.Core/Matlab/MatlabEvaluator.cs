@@ -2439,13 +2439,55 @@ if(!window.__hktdraw){window.__hktdraw=function(spec){
                 return MatlabPlots.PeaksFromGrid(a[0], a[1]);
             };
             _builtins["bar"] = a => {
+                a = DropAxes(a);
+                // bar(y) | bar(x,y) | bar(x,y,width) | ... 'FaceColor',c,'EdgeColor',c
+                int nNum = 0;
+                while (nNum < a.Length && !a[nNum].IsString) nNum++;
                 MValue X, Y;
-                if (a.Length == 1) {
+                if (nNum <= 1) {
                     Y = a[0];
                     X = new MValue(1, Y.Data.Length);
                     for (int i = 0; i < X.Data.Length; i++) X.Data[i] = i + 1;
                 } else { X = a[0]; Y = a[1]; }
-                _htmlOut?.Invoke(MatlabPlots.Bar(X, Y, false));
+                bool vector = (Y.Rows == 1 || Y.Cols == 1) && X.Data.Length == Y.Data.Length;
+                if (!vector || MatlabPlots.FigureIs3D)
+                {
+                    _htmlOut?.Invoke(MatlabPlots.Bar(X, Y, false));
+                    return new MValue(0);
+                }
+                // MATLAB: bar va a los EJES ACTUALES, como plot -> se COMPONE en la figura
+                // (antes salía como gráfico aparte y `bar(...); hold on; plot(...)` quedaba
+                // partido en dos). Una serie = UN polígono (barras unidas por la línea base
+                // y = 0), así la serie ocupa una sola entrada de la leyenda, como en MATLAB.
+                double width = nNum >= 3 && a[2].IsScalar ? a[2].Scalar : 0.8;   // MATLAB default 0.8
+                string fc = "#0072BD", ec = "#000000";
+                for (int i = nNum; i + 1 < a.Length; i += 2)
+                {
+                    if (!a[i].IsString) continue;
+                    switch (a[i].StringValue.ToLowerInvariant())
+                    {
+                        case "facecolor": fc = ColorArg(a[i + 1]) ?? fc; break;
+                        case "edgecolor": ec = ColorArg(a[i + 1]) ?? ec; break;
+                    }
+                }
+                if (!_holdOn && MatlabPlots.HasOpenFigure)
+                { var ph = MatlabPlots.FinishFigure(); if (!string.IsNullOrEmpty(ph)) _htmlOut?.Invoke(ph); }
+                if (!MatlabPlots.HasOpenFigure)
+                { var pv = MatlabPlots.BeginFigure(); if (!string.IsNullOrEmpty(pv)) _htmlOut?.Invoke(pv); _colorCycleIdx = 0; }
+                int n = X.Data.Length;
+                double dxMin = double.PositiveInfinity;
+                for (int i = 1; i < n; i++) dxMin = Math.Min(dxMin, Math.Abs(X.Data[i] - X.Data[i - 1]));
+                if (double.IsInfinity(dxMin) || dxMin <= 0) dxMin = 1;
+                double hw = 0.5 * width * dxMin;
+                var px = new System.Collections.Generic.List<double>(4 * n + 1);
+                var py = new System.Collections.Generic.List<double>(4 * n + 1);
+                for (int i = 0; i < n; i++)
+                {
+                    double xl = X.Data[i] - hw, xr = X.Data[i] + hw, h = Y.Data[i];
+                    px.Add(xl); py.Add(0); px.Add(xl); py.Add(h);
+                    px.Add(xr); py.Add(h); px.Add(xr); py.Add(0);
+                }
+                MatlabPlots.Patch2D(px.ToArray(), py.ToArray(), fc, ec, 1.0, 0.6);
                 return new MValue(0);
             };
             _builtins["barh"] = a => {
@@ -3250,7 +3292,7 @@ if(!window.__hktdraw){window.__hktdraw=function(spec){
                         case "facealpha": fa = a[i+1].Scalar; break;
                     }
                 }
-                MatlabPlots.Patch2D(a[0].Data, a[1].Data, fc, ec, lw, fa);
+                MatlabPlots.Patch2D(a[0].Data, a[1].Data, fc, ec, fa, lw);   // firma: (faceAlpha, lineWidth)
                 return new MValue(0);
             };
             _builtins["fill3"] = a => {
@@ -3434,6 +3476,18 @@ if(!window.__hktdraw){window.__hktdraw=function(spec){
             _builtins["zlim"] = a => { if (TryLim(a, out var lo, out var hi)) MatlabPlots.SetZLim(lo, hi); return new MValue(0); };
             _builtins["movegui"] = a => new MValue(0);
             _builtins["drawnow"] = a => { var f = MatlabPlots.RenderFrame(); if (f != null) _frameOut?.Invoke(f); return new MValue(0); };
+            // snapnow (MATLAB publish): "inserta AQUI la figura". En Lab la figura compuesta se
+            // difiere hasta el siguiente figure()/fin del script, asi que el texto que venía
+            // detrás quedaba ANTES del dibujo. snapnow la cierra y la emite en este punto.
+            _builtins["snapnow"] = a => {
+                if (MatlabPlots.HasOpenFigure && !MatlabPlots.SubplotActive)
+                {
+                    var ph = MatlabPlots.FinishFigure();
+                    if (!string.IsNullOrEmpty(ph)) _htmlOut?.Invoke(ph);
+                    _holdOn = false;
+                }
+                return new MValue(0);
+            };
             _builtins["get"] = a => {
                 if (a.Length >= 2 && a[0].Fields != null && a[1].IsString
                     && a[0].Fields.TryGetValue(a[1].StringValue.ToLowerInvariant(), out var v)) return v;
@@ -9374,7 +9428,7 @@ if(!window.__hktdraw){window.__hktdraw=function(spec){
             "surf", "mesh", "contour", "contourf", "imagesc", "bar", "stem", "hist",
             "histogram", "quiver", "quiver3", "text", "title", "xlabel", "ylabel",
             "zlabel", "legend", "grid", "axis", "hold", "xlim", "ylim", "zlim", "caxis",
-            "colorbar", "colormap", "subplot", "drawnow", "clf", "cla", "close",
+            "colorbar", "colormap", "subplot", "drawnow", "snapnow", "clf", "cla", "close",
             "shading", "lighting", "material", "camlight", "view", "rotate3d", "box",
             "set", "disp", "fprintf", "printf", "warning", "error", "pause", "clc",
             "clear", "format", "hoverdata", "datacursormode", "print", "saveas", "mex", "mkoctfile",

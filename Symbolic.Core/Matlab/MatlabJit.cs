@@ -780,7 +780,7 @@ namespace Calcpad.Core.Matlab
         private static readonly System.Collections.Generic.HashSet<string> _gfxFuncs =
             new System.Collections.Generic.HashSet<string>(System.StringComparer.Ordinal)
             {
-                "set", "drawnow", "pause", "patch", "figure", "plot", "plot3",
+                "set", "drawnow", "snapnow", "pause", "patch", "figure", "plot", "plot3",
                 "fill", "fill3", "surf", "mesh", "line", "text", "title",
                 "xlabel", "ylabel", "zlabel", "cla", "clf", "hold", "axis",
                 "caxis", "clim", "colormap", "colorbar", "quiver", "scatter",

@@ -309,7 +309,7 @@ namespace Calcpad.Core.Matlab
                 // Plot management
                 "figure", "clf", "close", "hold", "axis", "grid", "legend", "box", "colormap",
                 "title", "xlabel", "ylabel", "zlabel", "colorbar", "sgtitle", "caxis", "clim",
-                "shading", "view", "light", "lighting", "material", "camlight", "drawnow",
+                "shading", "view", "light", "lighting", "material", "camlight", "drawnow", "snapnow",
                 // Plot primitives (efecto sobre figura, no return value útil)
                 "plot", "plot3", "scatter", "scatter3", "bar", "barh", "stem", "stairs",
                 "polar", "polarplot", "fill", "fill3", "patch", "line", "text",
