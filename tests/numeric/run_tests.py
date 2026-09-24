@@ -78,6 +78,25 @@ EXPECTED = {
         "acc_decomp":               (0.00273494777608, 1e-12),
         "dif_decomp_vs_backslash":  (0.0, 1e-10),
     },
+    # t5: semantica de VALOR (b = d copia) y v(a:b) = x con UN indice dentro de un for
+    # (JIT). Esperados = MATLAB. Antes del arreglo: alias_arg 99, alias_loc 50,
+    # for_esc/for_col con "Index was outside the bounds", for_end 0 0 0.
+    "t5_valor_indexado": {
+        "alias_arg":      (1.0, 0),
+        "alias_loc":      (2.0, 0),
+        "param_caller":   ("1 1", None),
+        "loop_alias":     (1.0, 0),
+        "struct_alias":   (1.0, 0),
+        "for_top_alias":  (1.0, 0),
+        "for_esc":        ("0 5 5 5 0 0", None),
+        "for_vec":        ("1 2 3 2 4 6", None),
+        "for_col":        ("1 1 1 2 2 2", None),
+        "for_col_forma":  ("6 1", None),
+        "for_end":        ("1 2 2", None),
+        "for_grow":       ("1 1 2 2", None),
+        "gather_end":     (41.0, 0),
+        "top_end":        ("0 4 4 4 4", None),
+    },
 }
 
 # Piso de speedup: decomposition reusando la factorizacion vs backslash que

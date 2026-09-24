@@ -276,6 +276,7 @@ namespace Calcpad.Core.Matlab
             typeof(System.Numerics.Vector<double>).GetConstructor(new[] { typeof(double[]), typeof(int) });
         internal static readonly MethodInfo MJitGather     = typeof(MatlabEvaluator).GetMethod(nameof(MatlabEvaluator.JitGather));
         internal static readonly MethodInfo MJitScatterAdd = typeof(MatlabEvaluator).GetMethod(nameof(MatlabEvaluator.JitScatterAdd));
+        internal static readonly MethodInfo MJitCopyValue = typeof(MatlabEvaluator).GetMethod(nameof(MatlabEvaluator.JitCopyValue));
         internal static readonly MethodInfo MJitScatterAssign = typeof(MatlabEvaluator).GetMethod(nameof(MatlabEvaluator.JitScatterAssign));
         internal static readonly MethodInfo MJitScatterAddInPlace = typeof(MatlabEvaluator).GetMethod(nameof(MatlabEvaluator.JitScatterAddInPlace));
         internal static readonly MethodInfo MJitScatterAdd2InPlace = typeof(MatlabEvaluator).GetMethod(nameof(MatlabEvaluator.JitScatterAdd2InPlace));
@@ -1168,6 +1169,19 @@ namespace Calcpad.Core.Matlab
                     if (tgt is IdentRef ir)
                     {
                         var rhsKind = cc.VarKind[ir.Name];
+                        // SEMANTICA DE VALOR (MATLAB): `b = d`, `b = s.f`, `b = c{i}` con matrices.
+                        // Sin copia, b y d compartian el MValue y un `d(i) = ...` posterior (en
+                        // sitio via SetMatElem*) cambiaba tambien b (LovelyEig de ShellMITC4 daba
+                        // autovalores mal). El interprete ya copiaba (ExecuteAssignment); el JIT no.
+                        if (rhsKind == TKind.Matrix
+                            && (a.Rhs is FieldAccess || a.Rhs is CellIndex
+                                || (a.Rhs is IdentRef rid && rid.Name != ir.Name)))
+                        {
+                            var src = ConvertExprAsKind(a.Rhs, cc, TKind.Matrix);
+                            if (src == null) return null;
+                            return Expression.Call(cc.CtxParam, JitCtx.MSetMatVar,
+                                Expression.Constant(ir.Name), Expression.Call(JitCtx.MJitCopyValue, src));
+                        }
                         // FUSION element-wise: C = <cadena +,-,.*,./ de matrices> en un solo
                         // pase SIMD sin temporales, reusando el buffer de C. Mata el alloc/GC
                         // por operacion (el cuello real de A.*B en matrices grandes).
@@ -1196,7 +1210,11 @@ namespace Calcpad.Core.Matlab
                         // los dofs de un elemento no se repiten.
                         if (tgtCall.Args.Count == 1 && InferKind(tgtCall.Args[0], cc) == TKind.Matrix)
                         {
+                            // `end` dentro del indice (v(k:end) = x) = numel de ESTE arreglo.
+                            // Sin fijar EndArray, `end` no se resolvia contra v.
+                            var prevEndS = cc.EndArray; cc.EndArray = matIdent.Name;
                             var idxV = ConvertExprAsKind(tgtCall.Args[0], cc, TKind.Matrix);
+                            cc.EndArray = prevEndS;
                             if (idxV == null) return null;
                             // PATRON ACUMULACION: V(idx) = V(idx) + X  →  scatter-ADD in-place de X.
                             // Evita clonar el vector entero (ndof) y el gather redundante: el cuello
@@ -1992,7 +2010,9 @@ namespace Calcpad.Core.Matlab
                 // GATHER: A(vec) con indice vectorial (el u(d') del FEM)
                 if (InferKind(args[0], cc) == TKind.Matrix)
                 {
+                    var prevEndG = cc.EndArray; cc.EndArray = name;   // v(k:end) = numel(v)
                     var idxV = ConvertExprAsKind(args[0], cc, TKind.Matrix);
+                    cc.EndArray = prevEndG;
                     if (idxV == null) return null;
                     var matV = Expression.Call(cc.CtxParam, JitCtx.MGetMatVar, Expression.Constant(name));
                     return Expression.Call(JitCtx.MJitGather, matV, idxV);

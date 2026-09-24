@@ -11385,16 +11385,44 @@ if(!window.__hktdraw){window.__hktdraw=function(spec){
         /// Fint(d)=Fint(d)+... (el RHS ya trae el gather+suma).</summary>
         public static MValue JitScatterAssign(MValue dst, MValue idx, MValue vals)
         {
-            var nd = (double[])dst.Data.Clone();
-            int n = idx.Rows * idx.Cols;
+            // v(idx) = vals con idx VECTOR (p.ej. v(a:b) = x). MATLAB:
+            //  - vals escalar se REPARTE a todos los idx (antes se leia vals.Data[k] con
+            //    k >= 1 sobre un escalar -> IndexOutOfRange -> el bucle JIT abortaba y
+            //    v quedaba sin escribir);
+            //  - si no, numel(vals) debe ser numel(idx);
+            //  - un vector (o vacio) CRECE si idx pasa de su largo; una matriz no.
+            int n = idx.Data == null ? 0 : idx.Data.Length;
+            bool sc = vals.IsScalar;
+            if (!sc && (vals.Data == null || vals.Data.Length != n))
+                throw new MatlabRuntimeException($"Unable to perform assignment because the left and right sides have a different number of elements ({n} vs {(vals.Data == null ? 0 : vals.Data.Length)})");
+            var src = dst.Data ?? System.Array.Empty<double>();
+            int rows = dst.Rows, cols = dst.Cols, len = src.Length;
+            int maxLi = -1;
             for (int k = 0; k < n; k++)
             {
                 int li = (int)idx.Data[k] - 1;
-                if (li < 0 || li >= nd.Length) throw new MatlabRuntimeException($"Scatter index {li + 1} out of bounds (1..{nd.Length})");
-                nd[li] = vals.Data[k];
+                if (li < 0) throw new MatlabRuntimeException($"Index in position 1 is invalid: {li + 1}");
+                if (li > maxLi) maxLi = li;
             }
-            return new MValue(dst.Rows, dst.Cols, nd);
+            double[] nd;
+            if (maxLi >= len)
+            {
+                bool vacio = rows == 0 || cols == 0 || len == 0;
+                bool esCol = !vacio && cols == 1 && rows > 1;
+                if (!vacio && rows != 1 && !esCol)
+                    throw new MatlabRuntimeException($"Attempt to grow array along ambiguous dimension (index {maxLi + 1}, numel {len})");
+                nd = new double[maxLi + 1];
+                System.Array.Copy(src, nd, len);
+                if (esCol) { rows = maxLi + 1; cols = 1; } else { rows = 1; cols = maxLi + 1; }
+            }
+            else nd = (double[])src.Clone();
+            for (int k = 0; k < n; k++)
+                nd[(int)idx.Data[k] - 1] = sc ? vals.Scalar : vals.Data[k];
+            return new MValue(rows, cols, nd);
         }
+        /// <summary>Copia con semantica de VALOR de MATLAB para el JIT: `b = d` no debe
+        /// compartir el buffer (el JIT muta matrices en sitio con SetMatElem*).</summary>
+        public static MValue JitCopyValue(MValue v) => CloneArg(v);
         /// <summary>Columna j (1-based, expr) de una matriz — A(:,j). Alias claro de JitGetMatCol.</summary>
         public static MValue JitColSlice(MValue m, double jOneBased) => JitGetMatCol(m, jOneBased);
         /// <summary>Fila i (1-based, expr) de una matriz — A(i,:). Alias claro de JitGetMatRow.</summary>

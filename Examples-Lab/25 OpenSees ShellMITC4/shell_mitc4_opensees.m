@@ -120,7 +120,7 @@ for j = 0:n - 1
         c = [a, a + 1, a + n + 2, a + n + 1];
         g = zeros(1, 24);
         for k = 1:4
-            g(1, 6*k - 5:6*k) = 6*(c(k) - 1) + (1:6);
+            g(6*k - 5:6*k) = 6*(c(k) - 1) + (1:6);
         end
         K(g, g) = K(g, g) + mitc4_K(x_n(c, :), d_d);
     end
@@ -166,7 +166,7 @@ function d = lovely_eig(Mx)
   tol = 1.0e-08;
   a = [Mx(1, 2), Mx(2, 3), Mx(3, 1)];
   d = [Mx(1, 1), Mx(2, 2), Mx(3, 3)];
-  b = [Mx(1, 1), Mx(2, 2), Mx(3, 3)]; z = [0 0 0];   % b propio: en Lab «b = d» dentro de una función comparte memoria
+  b = d; z = [0 0 0];
   its = 0;
   sm = abs(a(1)) + abs(a(2)) + abs(a(3));
   while sm > tol
@@ -208,7 +208,7 @@ function d = lovely_eig(Mx)
         a(i) = 0.0;
       end
     end
-    b = b + z; d = b(1:3); z = [0 0 0];   % copia (mismo motivo)
+    b = b + z; d = b; z = [0 0 0];
     its = its + 1;
     sm = abs(a(1)) + abs(a(2)) + abs(a(3));
   end
