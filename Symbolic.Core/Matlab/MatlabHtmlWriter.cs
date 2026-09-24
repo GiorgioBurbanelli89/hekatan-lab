@@ -444,6 +444,7 @@ namespace Calcpad.Core.Matlab
                             + $" data-hk-cells='{celdas}'";
             }
             sb.Append("<span class=\"matrix\"").Append(hkAttrs).Append(">");
+            double zthr = ZeroThreshold(v);
             for (int i = 0; i < showR; i++)
             {
                 sb.Append("<span class=\"tr\">");
@@ -467,7 +468,8 @@ namespace Calcpad.Core.Matlab
                     }
                     else
                     {
-                        sb.Append(FormatNumber(v.At(ri, cj)));
+                        var dv = v.At(ri, cj);
+                        sb.Append(FormatNumber(System.Math.Abs(dv) < zthr ? 0 : dv));
                         // symunit por elemento: unidad verde tras el número (como MATLAB 10*[kN]).
                         if (v.HasUnitData)
                         {
@@ -491,14 +493,15 @@ namespace Calcpad.Core.Matlab
         }
 
         /// <summary>HTML de UNA celda de la matriz (numero, complejo y su unidad).</summary>
-        private static string HkCelda(MValue v, int i, int j)
+        private static string HkCelda(MValue v, int i, int j, double zthr = 0)
         {
             if (v.IsComplex)
             {
                 int idx = i * v.Cols + j;
                 return FormatComplex(v.Data[idx], v.Imag[idx]);
             }
-            string s = FormatNumber(v.At(i, j));
+            var dv = v.At(i, j);
+            string s = FormatNumber(System.Math.Abs(dv) < zthr ? 0 : dv);
             if (v.HasUnitData)
             {
                 var cu = v.UnitAt(i * v.Cols + j);
@@ -513,6 +516,7 @@ namespace Calcpad.Core.Matlab
         private static string HkCeldasJson(MValue v, int nr, int nc)
         {
             if ((long)nr * nc > HkMaxCeldas) return null;
+            double zthr = ZeroThreshold(v);   // una vez por matriz, no por celda
             var sb = new StringBuilder("[");
             for (int i = 0; i < nr; i++)
             {
@@ -522,7 +526,7 @@ namespace Calcpad.Core.Matlab
                 {
                     if (j > 0) sb.Append(',');
                     sb.Append('"');
-                    foreach (char ch in HkCelda(v, i, j))
+                    foreach (char ch in HkCelda(v, i, j, zthr))
                     {
                         if (ch == '"') sb.Append("\\\"");
                         else if (ch == '\\') sb.Append("\\\\");
@@ -1578,6 +1582,19 @@ namespace Calcpad.Core.Matlab
         /// selector "Round" de la barra inferior (6 por defecto ≈ MATLAB 'format short';
         /// 15 ≈ 'format long'). Antes estaba fija en 6 e ignoraba el control.</summary>
         public static int SignificantDigits = 6;
+
+        /// <summary>«Zero small elem.» (barra inferior), la misma regla que Calcpad
+        /// (HtmWriter: GetMaxVisibleMatrixValue·1e-14): en una matriz, el elemento con
+        /// |x| &lt; 1e-14·max|x| es ruido de redondeo y se muestra 0 (Z = 3.96E-14 junto a 6.63).</summary>
+        public static bool ZeroSmallElements = true;
+
+        private static double ZeroThreshold(MValue v)
+        {
+            if (!ZeroSmallElements || v == null || v.Data == null) return 0;
+            double mx = 0;
+            foreach (var d in v.Data) { var a = System.Math.Abs(d); if (a > mx && !double.IsInfinity(a)) mx = a; }
+            return mx * 1e-14;
+        }
 
         private static string FormatNumber(double v)
         {

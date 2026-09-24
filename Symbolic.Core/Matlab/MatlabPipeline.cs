@@ -504,6 +504,14 @@ namespace Calcpad.Core.Matlab
             var mdBuf = new System.Collections.Generic.List<string>();
             void FlushMd()
             {
+                // Un bloque Markdown es salida visible: la figura que siga abierta va ANTES
+                // (misma regla que el texto %' y los resultados, más abajo en el bucle).
+                if (mdBuf.Count > 0 && !hidden && !animFrameStreamed
+                    && MatlabPlots.HasOpenFigure && !MatlabPlots.SubplotActive)
+                {
+                    var figHtml = MatlabPlots.FinishFigure();
+                    if (!string.IsNullOrEmpty(figHtml)) sb.Append(figHtml);
+                }
                 if (mdBuf.Count > 0) sb.Append(MarkdownToHtml(mdBuf)).Append('\n');
                 mdBuf.Clear();
                 mdMode = false;
@@ -683,6 +691,9 @@ namespace Calcpad.Core.Matlab
                 }
                 pendingChunkLine = stmtLine;
                 StatementStarting?.Invoke(stmtLine);
+                // Figura abierta ANTES de esta sentencia (para volcarla en su sitio, ver abajo).
+                int sbAntesFig = sb.Length;
+                object figAntes = MatlabPlots.HasOpenFigure && !MatlabPlots.SubplotActive ? MatlabPlots.FigureToken : null;
                 try {
 
                 StatementResult result;
@@ -847,7 +858,9 @@ namespace Calcpad.Core.Matlab
                                 // Texto con HTML inline (<b>…</b>, entidades &xi;) + tokens (N_1→N₁, N''→N″):
                                 // se aplican subíndices/primas y luego se sustituye @ SIN escapar las etiquetas,
                                 // para que el HTML incrustado a mitad de línea se renderice (no salga literal).
-                                var enc = RenderInlineVarRefsRaw(ConvertSubscripts(ConvertPrimes(t.Trim())));
+                                // Subíndices SOLO en el texto: antes se convertía la línea entera y
+                                // «@v_max» llegaba como «vₘₐₓ» → no era variable → salía el nombre.
+                                var enc = RenderInlineVarRefsRaw(t.Trim(), s => ConvertSubscriptsHtml(ConvertPrimes(s), encode: false));
                                 if (finalStyle.Length > 0)
                                     sb.Append($"<p class=\"line\" id=\"line-{stmtLine}\"><span class=\"eq\" style=\"display:block;{finalStyle}\">{enc}</span></p>\n");
                                 else
@@ -1121,8 +1134,25 @@ namespace Calcpad.Core.Matlab
                     sb.Append(htmlBuffer);
                     htmlBuffer.Clear();
                 }
-
                 } finally {
+                    // La figura sigue abierta (MATLAB la cierra en el siguiente figure) y ESTA sentencia
+                    // sacó algo visible (texto %' o un resultado): la figura va ANTES de esa salida, como
+                    // en la hoja de Calcpad. Antes se volcaba en el siguiente figure() → cada gráfica
+                    // salía un bloque tarde (la malla después de W_z, el mapa de w después de M_x…).
+                    // title/colorbar/axis no sacan nada → siguen cayendo en su figura.
+                    // «Visible» = algo que no sea <script>: colorbar/colormap/title/axis emiten scripts
+                    // de ajuste (Plotly.restyle/relayout) que NO son salida y deben seguir sobre la figura.
+                    if (figAntes != null && !hidden && !animFrameStreamed && sb.Length > sbAntesFig
+                        && MatlabPlots.HasOpenFigure && !MatlabPlots.SubplotActive
+                        && ReferenceEquals(figAntes, MatlabPlots.FigureToken)
+                        && System.Text.RegularExpressions.Regex.Replace(
+                               sb.ToString(sbAntesFig, sb.Length - sbAntesFig),
+                               @"<script\b.*?</script>", "",
+                               System.Text.RegularExpressions.RegexOptions.Singleline).Trim().Length > 0)
+                    {
+                        var figHtml = MatlabPlots.FinishFigure();
+                        if (!string.IsNullOrEmpty(figHtml)) sb.Insert(sbAntesFig, figHtml);
+                    }
                     // Streaming: NO emitir aquí — diferimos hasta el cambio de
                     // linea-fuente (siguiente iteracion) o el final del script,
                     // para que la logica de merge mismo-renglón pueda mutar `sb`
@@ -1408,16 +1438,19 @@ namespace Calcpad.Core.Matlab
         /// </summary>
         private string RenderInlineVarRefs(string text)
         {
-            text = ConvertSubscripts(ConvertPrimes(text));   // N''->N″, N_1->N₁ en texto %' (captions)
+            // N''->N″, N_1->N₁ en el texto %' (captions). SOLO en el texto de alrededor, NUNCA en
+            // el nombre que sigue a @: antes se convertia la linea entera primero y «@M_x_max»
+            // llegaba como «M_xₘₐₓ», que no es ninguna variable → se imprimia el nombre (wₘₘ).
+            string lit(string s) => ConvertSubscriptsHtml(ConvertPrimes(s), encode: true);
             if (string.IsNullOrEmpty(text) || text.IndexOf('@') < 0)
-                return System.Net.WebUtility.HtmlEncode(text ?? "");
+                return lit(text ?? "");
             var outSb = new StringBuilder();
             int i = 0;
             while (i < text.Length)
             {
                 int at = text.IndexOf('@', i);
-                if (at < 0) { outSb.Append(System.Net.WebUtility.HtmlEncode(text.Substring(i))); break; }
-                if (at > i) outSb.Append(System.Net.WebUtility.HtmlEncode(text.Substring(i, at - i)));
+                if (at < 0) { outSb.Append(lit(text.Substring(i))); break; }
+                if (at > i) outSb.Append(lit(text.Substring(i, at - i)));
                 int k = at + 1;
                 string expr = null;
                 bool brace = false;
@@ -1442,16 +1475,17 @@ namespace Calcpad.Core.Matlab
         /// <summary>Igual que RenderInlineVarRefs pero para líneas de HTML CRUDO: sustituye
         /// @nombre/@{expr} conservando el resto VERBATIM (no escapa &lt; &gt; ni aplica subíndices),
         /// para poder mezclar etiquetas (&lt;b&gt;…&lt;/b&gt;, entidades) con valores de variables.</summary>
-        private string RenderInlineVarRefsRaw(string text)
+        private string RenderInlineVarRefsRaw(string text, Func<string, string> lit = null)
         {
-            if (string.IsNullOrEmpty(text) || text.IndexOf('@') < 0) return text ?? "";
+            lit ??= s => s;   // transformación del TEXTO (subíndices/primas); nunca de los nombres tras @
+            if (string.IsNullOrEmpty(text) || text.IndexOf('@') < 0) return lit(text ?? "");
             var outSb = new StringBuilder();
             int i = 0;
             while (i < text.Length)
             {
                 int at = text.IndexOf('@', i);
-                if (at < 0) { outSb.Append(text.Substring(i)); break; }
-                if (at > i) outSb.Append(text.Substring(i, at - i));          // VERBATIM (conserva etiquetas)
+                if (at < 0) { outSb.Append(lit(text.Substring(i))); break; }
+                if (at > i) outSb.Append(lit(text.Substring(i, at - i)));     // VERBATIM (conserva etiquetas)
                 int k = at + 1;
                 string expr = null;
                 bool brace = false;
@@ -1811,6 +1845,31 @@ namespace Calcpad.Core.Matlab
                         else return m.Value;   // algún char sin subíndice Unicode -> dejar igual
                     return m.Groups[1].Value + sb;
                 });
+        }
+
+        /// <summary>Texto %' → HTML con subíndices: Unicode cuando existe (a_1 → a₁) y, cuando
+        /// alguna letra no tiene subíndice Unicode (M_xy, θ_y, Φ_ib), &lt;sub&gt; generado aquí —
+        /// antes quedaba «M_xy» literal. El usuario escribe M_xy; el HTML lo pone el motor.
+        /// <paramref name="encode"/>: escapar el texto (línea sin HTML propio).</summary>
+        internal static string ConvertSubscriptsHtml(string s, bool encode)
+        {
+            string enc(string t) => encode ? System.Net.WebUtility.HtmlEncode(t) : t;
+            if (string.IsNullOrEmpty(s) || s.IndexOf('_') < 0) return enc(s ?? "");
+            var rx = new System.Text.RegularExpressions.Regex(
+                "(?<![A-Za-z0-9\\u0370-\\u03FF])([A-Za-z\\u0370-\\u03FF][\\u2032\\u2033\\u2034]?)_([A-Za-z0-9]{1,3})(?![A-Za-z0-9_])");
+            var outSb = new StringBuilder();
+            int last = 0;
+            foreach (System.Text.RegularExpressions.Match m in rx.Matches(s))
+            {
+                outSb.Append(enc(s.Substring(last, m.Index - last)));
+                // SIEMPRE <sub> (como Calcpad): mezclar Unicode diminuto (Φᵢₐ) con <sub> (Φ<sub>ib</sub>)
+                // en la misma línea se veía desparejo. Admite prima antes del _ (Φ″_ia).
+                outSb.Append(enc(m.Groups[1].Value));
+                outSb.Append("<sub>" + enc(m.Groups[2].Value) + "</sub>");
+                last = m.Index + m.Length;
+            }
+            outSb.Append(enc(s.Substring(last)));
+            return outSb.ToString();
         }
 
         private static string RenderDispWithMatrices(string raw)

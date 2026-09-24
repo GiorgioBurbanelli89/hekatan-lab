@@ -1503,6 +1503,8 @@ namespace Calcpad.Wpf
 
             mathSettings.Substitute = SubstituteCheckBox.IsChecked ?? false;
             mathSettings.ZeroSmallMatrixElements = ZeroSmallMatrixElementsCheckBox.IsChecked ?? false;
+            // La casilla tambien manda en la salida MATLAB (antes solo en el motor Calcpad).
+            Calcpad.Core.Matlab.MatlabHtmlWriter.ZeroSmallElements = mathSettings.ZeroSmallMatrixElements;
         }
 
         private void GetPlotSettings()

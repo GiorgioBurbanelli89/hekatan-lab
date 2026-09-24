@@ -153,6 +153,9 @@ namespace Calcpad.Core.Matlab
         // antes de que exista el div no haría nada.
         private static bool _figAxisOff = false;
         public static bool HasOpenFigure => _figTraces != null;
+        /// <summary>Identidad de la figura abierta (la lista de trazas es nueva en cada figura):
+        /// sirve para saber si la figura de ANTES de una sentencia sigue siendo la misma.</summary>
+        public static object FigureToken => _figTraces;
         public static bool FigureIs3D => _figIs3D;
         /// <summary>plot3() COMPUESTO: agrega una polilínea 3D a la figura abierta (misma escena LAB3D
         /// que patch/surf), para componer solido + jaula de acero (rebar) en UNA escena. Emite tanto la
