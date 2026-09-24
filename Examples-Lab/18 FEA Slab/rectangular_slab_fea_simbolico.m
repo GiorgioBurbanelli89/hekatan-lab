@@ -1,4 +1,4 @@
-%% Finite Element Analysis of Rectangular Slab
+%% Finite Element Analysis of Rectangular Slab (Hermite functions deduced symbolically)
 % #md
 % # Finite Element Analysis of Rectangular Slab
 % #endmd
@@ -93,15 +93,34 @@ axis equal; axis off;
 % ## Finite element formulation
 % **Shape functions**
 % #endmd
-%' Base functions, first and second derivatives along a dimension of length l (ξ = x/l):
-Phi = @(xi, l) [1 - xi^2*(3 - 2*xi), xi*l*(1 - xi*(2 - xi)), xi^2*(3 - 2*xi), xi^2*l*(-1 + xi)]
-Phiprime = @(xi, l) [-6*(xi/l)*(1 - xi), 1 - xi*(4 - 3*xi), 6*(xi/l)*(1 - xi), -xi*(2 - 3*xi)]
-Phipprime = @(xi, l) [-(6/l^2)*(1 - 2*xi), -(2/l)*(2 - 3*xi), 6/l^2*(1 - 2*xi), -(2/l)*(1 - 3*xi)]
+%' Deduced, not written: along a dimension of length l, in the local coordinate ξ = x/l,
+%' each base function is the cubic that is 1 in ONE end degree of freedom
+%' (w or θ at ξ = 0 or ξ = 1) and 0 in the other three.
+syms xi l
+%' Cubic monomials and their rotation θ = dw/dx = (1/l)·dw/dξ:
+p = [1, xi, xi^2, xi^3]
+pprime = diff(p, xi)/l
+%' Conditions matrix, one row per end degree of freedom [w(0); θ(0); w(1); θ(1)]:
+A = [subs(p, xi, 0); subs(pprime, xi, 0); subs(p, xi, 1); subs(pprime, xi, 1)]
+%' Coefficients of the four base functions (one column each):
+C = simplify(inv(A))
+%' Hermite cubic base functions Φ = p·C:
+Phi = simplify(p*C)
+%' First and second derivatives with respect to x:
+Phiprime = simplify(diff(Phi, xi)/l)
+Phipprime = simplify(diff(Phi, xi, 2)/l^2)
+%' Check against the functions that Calcpad writes by hand (must be 0 0 0 0):
+Phi_cp = [1 - xi^2*(3 - 2*xi), xi*l*(1 - xi*(2 - xi)), xi^2*(3 - 2*xi), xi^2*l*(-1 + xi)];
+dif = simplify(Phi - Phi_cp)
+%' For the numerical integration they are evaluated at the needed points:
+Phi_n = @(x, L) double(subs(Phi, {xi, l}, {x, L}));
+Phiprime_n = @(x, L) double(subs(Phiprime, {xi, l}, {x, L}));
+Phipprime_n = @(x, L) double(subs(Phipprime, {xi, l}, {x, L}));
 %' Each of the 16 shape functions is a product N = Φ_ia(ξ)·Φ_ib(η). Per joint: w, θ_x, θ_y, ψ;
 %' joints 1 = (0,0), 2 = (1,0), 3 = (1,1), 4 = (0,1). Index of Φ along a (i_a) and along b (i_b):
 i_a = [1 2 1 2 3 4 3 4 3 4 3 4 1 2 1 2]
 i_b = [1 1 2 2 1 1 2 2 3 3 4 4 3 3 4 4]
-N = @(xi, eta) Phi(xi, a_1)(i_a).*Phi(eta, b_1)(i_b);
+N = @(x, y) Phi_n(x, a_1)(i_a).*Phi_n(y, b_1)(i_b);
 
 % #md
 % **Constitutive matrix** (stress - strain relationship)
@@ -112,9 +131,9 @@ D = E*1000*t^3/(12*(1 - nu^2))*[1, nu, 0; nu, 1, 0; 0, 0, (1 - nu)/2]
 % **Strain-displacement matrix**
 % #endmd
 %' B = [ Φ″_ia(ξ)·Φ_ib(η) ;  Φ_ia(ξ)·Φ″_ib(η) ;  2·Φ′_ia(ξ)·Φ′_ib(η) ]
-B = @(xi, eta) [Phipprime(xi, a_1)(i_a).*Phi(eta, b_1)(i_b); ...
-                Phi(xi, a_1)(i_a).*Phipprime(eta, b_1)(i_b); ...
-                2*Phiprime(xi, a_1)(i_a).*Phiprime(eta, b_1)(i_b)];
+B = @(x, y) [Phipprime_n(x, a_1)(i_a).*Phi_n(y, b_1)(i_b); ...
+             Phi_n(x, a_1)(i_a).*Phipprime_n(y, b_1)(i_b); ...
+             2*Phiprime_n(x, a_1)(i_a).*Phiprime_n(y, b_1)(i_b)];
 
 %' The elements of the stiffness matrix will be calculated by using the equation
 %' K_e = a_1·b_1·∫₀¹∫₀¹ B(ξ; η)ᵀ·D·B(ξ; η) dξ dη

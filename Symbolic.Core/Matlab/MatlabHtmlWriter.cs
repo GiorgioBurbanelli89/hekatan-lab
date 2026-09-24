@@ -66,6 +66,22 @@ namespace Calcpad.Core.Matlab
                         // Para ocultar: usar `%--` (filtrado en MatlabPipeline).
                         sb.Append(HttpUtility.HtmlEncode(cs.Text));
                     break;
+                case Assignment asg when asg.Rhs is AnonFunction afDef
+                                         && !(afDef.ParamNames.Count == 1 && afDef.ParamNames[0] == "__handle__"):
+                    // Definición de función, como Calcpad:  Phipprime = @(xi, l) …  →  Φ″(ξ; l) = …
+                    // Antes: «Φ″ = @(ξ, l) … = @(...)» (el valor de un handle no dice nada).
+                    sb.Append("<span class=\"eq\">");
+                    RenderAssignmentLhs(sb, asg);
+                    sb.Append("(");
+                    for (int i = 0; i < afDef.ParamNames.Count; i++)
+                    {
+                        if (i > 0) sb.Append("; ");
+                        sb.Append(RenderExpression(new IdentRef { Name = afDef.ParamNames[i] }));
+                    }
+                    sb.Append(") = ");
+                    sb.Append(RenderExpression(afDef.Body));
+                    sb.Append("</span>");
+                    break;
                 case Assignment asg:
                     sb.Append("<span class=\"eq\">");
                     RenderAssignmentLhs(sb, asg);
