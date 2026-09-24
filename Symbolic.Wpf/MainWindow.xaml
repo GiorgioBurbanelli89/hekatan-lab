@@ -2210,7 +2210,12 @@
                     <me:MathCanvasControl x:Name="MathCanvasView" Visibility="Collapsed" Margin="5,5,5,5"/>
                 </Grid>
             </GroupBox>
-            <GridSplitter x:Name="MainSplitter" Grid.Column="1" HorizontalAlignment="Stretch" Margin="1,5,1,0" Background="#32DDDDDD" />
+            <!-- Width explícito: la columna es Auto y SIN ancho el divisor medía ~2 px (solo el
+                 margen) → no se podía agarrar para arrastrar. ResizeBehavior = las dos columnas. -->
+            <GridSplitter x:Name="MainSplitter" Grid.Column="1" Width="6" HorizontalAlignment="Center"
+                          VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext"
+                          ResizeDirection="Columns" Cursor="SizeWE" ShowsPreview="False"
+                          Margin="1,5,1,0" Background="#32DDDDDD" />
             <Border x:Name="CodeCheckBorder"
                     CornerRadius="4" Padding="4,2,2,2" Margin="0,2,16,0" 
                     HorizontalAlignment="Right" VerticalAlignment="Top"  

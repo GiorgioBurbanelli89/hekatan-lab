@@ -106,6 +106,19 @@ namespace Calcpad.Wpf
                 case "state":
                     return Estado();
 
+                // Anchos del reparto Codigo | divisor | Output, y DONDE esta el divisor en
+                // pantalla (px fisicos) para arrastrarlo con el raton de verdad.
+                case "layout":
+                    {
+                        var inv = System.Globalization.CultureInfo.InvariantCulture;
+                        var p0 = MainSplitter.PointToScreen(new Point(0, 0));
+                        var p1 = MainSplitter.PointToScreen(new Point(MainSplitter.ActualWidth, MainSplitter.ActualHeight));
+                        return string.Format(inv,
+                            "{{\"ok\":true,\"editor\":{0},\"splitter\":{1},\"web\":{2},\"sx0\":{3},\"sy0\":{4},\"sx1\":{5},\"sy1\":{6}}}",
+                            EditorCol.ActualWidth, MainSplitter.ActualWidth, WebCol.ActualWidth,
+                            (int)p0.X, (int)p0.Y, (int)p1.X, (int)p1.Y);
+                    }
+
                 // Zoom del codigo como Ctrl+rueda: {"op":"zoom","steps":+1|-1} -> tamaño de letra
                 case "zoom":
                     {
