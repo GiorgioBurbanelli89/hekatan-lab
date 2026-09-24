@@ -106,6 +106,15 @@ namespace Calcpad.Wpf
                 case "state":
                     return Estado();
 
+                // Zoom del codigo como Ctrl+rueda: {"op":"zoom","steps":+1|-1} -> tamaño de letra
+                case "zoom":
+                    {
+                        var pasos = root.TryGetProperty("steps", out var sp) ? sp.GetInt32() : 1;
+                        double fs = AvalonEditor.FontSize;
+                        for (int k = 0; k < Math.Abs(pasos); k++) fs = ZoomEditor(Math.Sign(pasos));
+                        return "{\"ok\":true,\"fontSize\":" + fs.ToString(System.Globalization.CultureInfo.InvariantCulture) + "}";
+                    }
+
                 // Autocompletado SIN capturas: el popup es otra ventana y no sale en el PNG
                 // (por eso «no funciona» parecia cierto cuando si funcionaba). Esto devuelve
                 // lo que el popup ofreceria para un prefijo, y si el editor que lo tiene

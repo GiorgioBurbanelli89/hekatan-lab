@@ -53,6 +53,14 @@ namespace Calcpad.Wpf
             // Doble clic en el codigo -> el reporte se mueve a esa linea (lo hacia
             // RichTextBox_MouseDoubleClick, que con el editor plegable delante ya no llega).
             AvalonEditor.MouseDoubleClick += AvalonEditor_MouseDoubleClick;
+            // Ctrl + rueda = zoom del codigo (lo hacia RichTextBox_PreviewMouseWheel, que con
+            // el editor plegable delante ya no llega; el Output si lo tenia: WebView2).
+            AvalonEditor.PreviewMouseWheel += (_, e) =>
+            {
+                if (!IsControlDown) return;
+                e.Handled = true;
+                ZoomEditor(Math.Sign(e.Delta));
+            };
             // La linea del cursor se pinta: asi se VE donde cayo el salto desde el reporte.
             AvalonEditor.Options.HighlightCurrentLine = true;
 
@@ -285,6 +293,21 @@ namespace Calcpad.Wpf
             ActualizarPlegado();
             ActualizarSemantica();
             ProgramarAutoRunAvalon();
+        }
+
+        /// <summary>Zoom del codigo: +2 / −2 puntos, entre 6 y 40 (mismos pasos y topes que el
+        /// editor clasico). Se aplica a los dos editores para que al alternar «Plegado» no
+        /// cambie el tamaño. Devuelve el tamaño resultante.</summary>
+        private double ZoomEditor(int sentido)
+        {
+            var d = AvalonEditor.FontSize + 2 * sentido;
+            if (d >= 6 && d <= 40)
+            {
+                AvalonEditor.FontSize = d;
+                RichTextBox.FontSize = d;
+                DispatchLineNumbers();
+            }
+            return AvalonEditor.FontSize;
         }
 
         // ---------- AutoRun al escribir ----------
