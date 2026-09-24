@@ -39,6 +39,9 @@ namespace Calcpad.Wpf
     /// </summary>
     public partial class MainWindow
     {
+        private int _ctlNavs;                 // navegaciones del WebView2 (op «navs»)
+        private bool _ctlNavsEnganchado;
+
         /// <summary>Operaciones de prueba del editor. Devuelve null si la op no es de aqui
         /// (entonces el canal contesta "op desconocida" como siempre).</summary>
         private string CtlEditorOp(string op, JsonElement root)
@@ -117,6 +120,19 @@ namespace Calcpad.Wpf
                             "{{\"ok\":true,\"editor\":{0},\"splitter\":{1},\"web\":{2},\"sx0\":{3},\"sy0\":{4},\"sx1\":{5},\"sy1\":{6}}}",
                             EditorCol.ActualWidth, MainSplitter.ActualWidth, WebCol.ActualWidth,
                             (int)p0.X, (int)p0.Y, (int)p1.X, (int)p1.Y);
+                    }
+
+                // Parpadeo del Output: cuantas veces NAVEGO el WebView2 (cada navegacion = pagina
+                // en blanco un instante). {"op":"navs","reset":true} pone a 0 y empieza a contar.
+                case "navs":
+                    {
+                        if (!_ctlNavsEnganchado)
+                        {
+                            _ctlNavsEnganchado = true;
+                            WebViewer.CoreWebView2.NavigationStarting += (_, _) => _ctlNavs++;
+                        }
+                        if (root.TryGetProperty("reset", out var rs) && rs.GetBoolean()) _ctlNavs = 0;
+                        return "{\"ok\":true,\"navs\":" + _ctlNavs + "}";
                     }
 
                 // Zoom del codigo como Ctrl+rueda: {"op":"zoom","steps":+1|-1} -> tamaño de letra

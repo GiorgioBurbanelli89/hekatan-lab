@@ -330,6 +330,7 @@ namespace Calcpad.Wpf
                     _autoRunAvalonTimer.Stop();
                     if (!IsAutoRun || !EditorPlegableActivo) return;
                     _autoRun = false;
+                    _renderSinParpadeo = true;   // swap atómico: sin página en blanco intermedia
                     await AutoRun();
                 };
             }

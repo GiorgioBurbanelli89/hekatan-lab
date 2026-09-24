@@ -1574,6 +1574,12 @@ namespace Calcpad.Wpf
             //    (solo espacios de más, indentación o líneas en blanco), NO recalcular — el
             //    output actual ya es correcto. Evita recalcular las integrales al tocar un espacio.
             bool ctlRerun = _recalcFromControl;   // Piso 3: este cálculo lo disparó un control
+            // SIN PARPADEO: el AutoRun al escribir (y el control) NO re-navega a la página de
+            // streaming (1.er destello: página vacía + banner) para luego pintar (2.º): deja el
+            // resultado anterior a la vista y hace UN swap atómico al final (__matlabSwap).
+            // Salvo si hay drawnow: la animación en vivo necesita el streaming por statement.
+            bool swapRender = ctlRerun || (_renderSinParpadeo && outputText.IndexOf("drawnow", StringComparison.Ordinal) < 0);
+            _renderSinParpadeo = false;
             if (!toWebForm && !IsWebForm && IsCalculated && _lastReportHtml != null &&
                 _lastCalcSourceNorm != null && !ctlRerun &&
                 NormalizeForCompare(outputText) == _lastCalcSourceNorm)
@@ -1601,7 +1607,7 @@ namespace Calcpad.Wpf
                 var streamingPage = BuildStreamingPage();
                 try
                 {
-                    if (ctlRerun)
+                    if (swapRender)
                     {
                         // Piso 3 EN VIVO: re-run por control → NO re-navegar NI limpiar todavía.
                         // Se mantiene el contenido viejo visible y al final se hace UN swap
@@ -1612,7 +1618,7 @@ namespace Calcpad.Wpf
                         catch { }
                         if (ok != "1")
                         {
-                            ctlRerun = false;   // página no lista → streamear normal
+                            swapRender = false;   // página no lista → streamear normal
                             await _wv2Warper.NavigateToStringAsync(WithThemeClass(streamingPage));
                         }
                     }
@@ -1715,7 +1721,7 @@ namespace Calcpad.Wpf
                     pipeline.StatementStarting += line =>
                         Dispatcher.InvokeAsync(async () =>
                         {
-                            if (ctlRerun) return;   // re-run por control: sin banner "Calculando…" (evita el destello)
+                            if (swapRender) return;   // re-run por control/autorun: sin banner "Calculando…" (evita el destello)
                             try {
                                 var elapsed = (DateTime.UtcNow - parseStart).TotalSeconds;
                                 string preview = "";
@@ -1740,7 +1746,7 @@ namespace Calcpad.Wpf
                     pipeline.StatementCompleted += (line, html) =>
                         Dispatcher.InvokeAsync(async () =>
                         {
-                            if (ctlRerun) return;   // re-run por control: NO streamear por statement; swap único al final
+                            if (swapRender) return;   // re-run por control/autorun: NO streamear por statement; swap único al final
                             try
                             {
                                 // FRAME de animación (drawnow, marcado con \x01FRAME\x01) → se repinta en
@@ -1784,7 +1790,7 @@ namespace Calcpad.Wpf
                 // Limpiar el banner "Calculando..." y mostrar errores top-level si hay
                 try
                 {
-                    if (pureErr != null)
+                    if (pureErr != null && !swapRender)
                     {
                         var errHtml = $"<p class=\"err\">Error on line {pureErrLine}: " +
                             $"{System.Net.WebUtility.HtmlEncode(pureErr)}</p>";
@@ -1800,11 +1806,15 @@ namespace Calcpad.Wpf
                 // (no se streameó por statement ni se limpió antes). Construye el HTML nuevo y
                 // reemplaza el contenido en una sola operación (re-ejecuta Plotly/__hkt) → sin
                 // parpadeo ni banner. El plot se recrea, pero el output no queda en blanco.
-                if (ctlRerun && pureErr == null)
+                if (swapRender)
                 {
                     try
                     {
-                        var escSwap = System.Text.Json.JsonSerializer.Serialize(pureHtml ?? "");
+                        // con error: lo calculado hasta ahi + el error, en el MISMO swap
+                        // (antes solo se hacia sin error; appendear sobre el viejo lo duplicaba)
+                        var swapHtml = (pureHtml ?? "") + (pureErr == null ? "" :
+                            $"<p class=\"err\">Error on line {pureErrLine}: {System.Net.WebUtility.HtmlEncode(pureErr)}</p>");
+                        var escSwap = System.Text.Json.JsonSerializer.Serialize(swapHtml);
                         await WebViewer.ExecuteScriptAsync($"window.__matlabSwap && window.__matlabSwap({escSwap});");
                     }
                     catch { }
@@ -3130,6 +3140,7 @@ namespace Calcpad.Wpf
         // Piso 3, canal 'geom': geometría dibujada con el cursor (ginput). Por Tag, la matriz de
         // vértices [x,z]. Sobrevive a re-runs (el motor es nuevo cada cálculo) igual que _controlValues.
         private readonly Dictionary<string, double[][]> _geomValues = new();
+        private bool _renderSinParpadeo;              // el próximo cálculo es AutoRun al escribir → swap sin parpadeo
         private bool _recalcFromControl;              // el próximo cálculo viene de un control → saltar el guard
         private System.Windows.Threading.DispatcherTimer _ctrlDebounce;   // debounce de re-runs por arrastre
 
@@ -4194,7 +4205,9 @@ window.__lazyRelayout = function(id,a,b){ var d=window.__plotDefs[id]; if(d){d.o
                     if (p is not null)
                     {
                         var len = p.ContentStart.GetOffsetToPosition(p.ContentEnd);
-                        if (IsCalculated && len > 2 && !_highlighter.Defined.HasMacros)
+                        // Con AvalonEdit NO: el GIF «escribiendo» iba a la línea del cursor del
+                        // RichTextBox OCULTO (otra línea) y era un destello más en cada tecla.
+                        if (IsCalculated && len > 2 && !_highlighter.Defined.HasMacros && !vinoDeAvalon)
                             _wv2Warper.SetContentAsync(_currentLineNumber, _svgTyping);
                     }
                     _autoRun = true;
