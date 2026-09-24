@@ -284,6 +284,34 @@ namespace Calcpad.Wpf
             finally { _desdeAvalon = false; }
             ActualizarPlegado();
             ActualizarSemantica();
+            ProgramarAutoRunAvalon();
+        }
+
+        // ---------- AutoRun al escribir ----------
+        // El AutoRun clasico lo disparaba el RichTextBox al CAMBIAR DE LINEA
+        // (RichTextBox_SelectionChanged) o al PERDER EL FOCO. Con AvalonEdit delante, el
+        // RichTextBox oculto nunca recibe cursor ni foco: _autoRun quedaba en true y nadie
+        // calculaba (instalador 1.3.21: se escribia y el Output se quedaba quieto).
+        // Ahora, como Hekatan Fortran y C++: 700 ms despues de la ultima tecla, se calcula.
+        private System.Windows.Threading.DispatcherTimer _autoRunAvalonTimer;
+
+        private void ProgramarAutoRunAvalon()
+        {
+            if (!IsAutoRun) return;
+            if (_autoRunAvalonTimer is null)
+            {
+                _autoRunAvalonTimer = new System.Windows.Threading.DispatcherTimer
+                { Interval = TimeSpan.FromMilliseconds(700) };
+                _autoRunAvalonTimer.Tick += async (_, _) =>
+                {
+                    _autoRunAvalonTimer.Stop();
+                    if (!IsAutoRun || !EditorPlegableActivo) return;
+                    _autoRun = false;
+                    await AutoRun();
+                };
+            }
+            _autoRunAvalonTimer.Stop();      // cada tecla reinicia la cuenta
+            _autoRunAvalonTimer.Start();
         }
 
         /// <summary>RichTextBox -> AvalonEdit. Se llama al abrir archivo, al limpiar, y
